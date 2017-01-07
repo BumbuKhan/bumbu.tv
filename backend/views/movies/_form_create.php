@@ -48,8 +48,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'subtitle')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'add_datetime')->textInput() ?>
-
     <?= $form->field($model, 'is_blocked')->dropDownList([ '0', '1', ], ['prompt' => '']) ?>
 
     <?= $form->field($model, 'is_deleted')->dropDownList([ '0', '1', ], ['prompt' => '']) ?>

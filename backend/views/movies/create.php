@@ -14,7 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
+    <?php $view_file = (Yii::$app->controller->action->id == 'create')? '_form_create': '_form';?>
+
+    <?= $this->render($view_file, [
         'model' => $model,
     ]) ?>
 

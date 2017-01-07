@@ -23,7 +23,7 @@ class MoviesController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+//                    'delete' => ['POST'],
                 ],
             ],
         ];
@@ -65,7 +65,10 @@ class MoviesController extends Controller
     {
         $model = new Movies();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->add_datetime = date('Y-m-d h:i:s', time());
+
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -99,12 +102,12 @@ class MoviesController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    /*public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
+    }*/
 
     /**
      * Finds the Movies model based on its primary key value.
