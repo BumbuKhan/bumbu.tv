@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Genres;
-use backend\models\GenresSearch;
+use backend\models\Countries;
+use backend\models\CountriesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * GenresController implements the CRUD actions for Genres model.
+ * CountriesController implements the CRUD actions for Countries model.
  */
-class GenresController extends Controller
+class CountriesController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,12 +30,12 @@ class GenresController extends Controller
     }
 
     /**
-     * Lists all Genres models.
+     * Lists all Countries models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new GenresSearch();
+        $searchModel = new CountriesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,8 +45,8 @@ class GenresController extends Controller
     }
 
     /**
-     * Displays a single Genres model.
-     * @param string $id
+     * Displays a single Countries model.
+     * @param integer $id
      * @return mixed
      */
     public function actionView($id)
@@ -57,15 +57,13 @@ class GenresController extends Controller
     }
 
     /**
-     * Creates a new Genres model.
+     * Creates a new Countries model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Genres();
-
-        $model->scenario = Yii::$app->params['SCENARIO_GENRES_CREATE'];
+        $model = new Countries();
 
         if ($model->load(Yii::$app->request->post())) {
             $model->add_datetime = date('Y-m-d h:i:s', time());
@@ -80,9 +78,9 @@ class GenresController extends Controller
     }
 
     /**
-     * Updates an existing Genres model.
+     * Updates an existing Countries model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $id
+     * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
@@ -99,9 +97,9 @@ class GenresController extends Controller
     }
 
     /**
-     * Deletes an existing Genres model.
+     * Deletes an existing Countries model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
+     * @param integer $id
      * @return mixed
      */
     /*public function actionDelete($id)
@@ -112,15 +110,15 @@ class GenresController extends Controller
     }*/
 
     /**
-     * Finds the Genres model based on its primary key value.
+     * Finds the Countries model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return Genres the loaded model
+     * @param integer $id
+     * @return Countries the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Genres::findOne($id)) !== null) {
+        if (($model = Countries::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
