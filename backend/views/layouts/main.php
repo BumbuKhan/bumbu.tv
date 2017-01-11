@@ -28,14 +28,16 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => 'Bumbu CMS',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => '<i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;Movies', 'url' => ['/movies/index']],
+        ['label' => '<i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;&nbsp;Genres', 'url' => ['/genres/index']],
+        ['label' => '<i class="fa fa-globe" aria-hidden="true"></i>&nbsp;&nbsp;Countries', 'url' => ['/countries/index']],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
@@ -43,13 +45,14 @@ AppAsset::register($this);
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '<i class="fa fa-sign-out" aria-hidden="true"></i> Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
             . '</li>';
     }
     echo Nav::widget([
+        'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,
     ]);
