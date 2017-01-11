@@ -23,6 +23,9 @@ class Genres extends \yii\db\ActiveRecord
         return 'genres';
     }
 
+    /**
+     * @return array
+     */
     public function scenarios()
     {
         $scenarios = parent::scenarios();

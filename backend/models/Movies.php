@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "movies".
@@ -45,6 +46,26 @@ class Movies extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        // this field are common for all types of movies
+        $common_fields = ['type', 'title', 'description', 'duration', 'issue_date', 'src', 'subtitle',];
+
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_DEFAULT']] = ['type'];
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src', 'poster_left', 'poster_middle', 'poster_right', 'gradient_start_color', 'gradient_end_color']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE']] = array_merge($common_fields, ['episode_shot']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_TED_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'ted_original']);
+
+        return $scenarios;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -55,7 +76,8 @@ class Movies extends \yii\db\ActiveRecord
             [['issue_date', 'add_datetime'], 'safe'],
             [['view_amount'], 'integer'],
             [['title', 'src', 'trailer_src', 'ted_original', 'subtitle'], 'string', 'max' => 255],
-            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'string', 'max' => 100],
+//            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'string', 'max' => 100],
+            ['poster_small', 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
             [['gradient_start_color', 'gradient_end_color'], 'string', 'max' => 7],
             [['duration'], 'string', 'max' => 8],
         ];

@@ -65,16 +65,55 @@ class MoviesController extends Controller
     {
         $model = new Movies();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->add_datetime = date('Y-m-d h:i:s', time());
+        // getting request
+        $request = Yii::$app->request;
 
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if ($request->isPost) {
+            // getting post
+            $post = $request->post();
+
+            // getting type of movie
+            $movie_type = $post['Movies']['type'];
+
+            // setting scenario up depending on $movie_type
+            $scenario_to_setup = '';
+
+            switch ($movie_type) {
+                case 'movie':
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE'];
+                    break;
+                case 'series':
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE'];
+                    break;
+                case 'episode':
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE'];
+                    break;
+                case 'cartoon':
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE'];
+                    break;
+                case 'ted':
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_TED_CREATE'];
+                    break;
+                default:
+                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_DEFAULT'];
+            }
+
+            $model->scenario = $scenario_to_setup;
+
+            // loading post data to the model
+            $model->load($post);
+
+            if ($model->validate()) {
+                $model->add_datetime = date('Y-m-d h:i:s', time());
+
+                $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
