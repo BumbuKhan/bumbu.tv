@@ -35,9 +35,21 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => '<i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;Movies', 'url' => ['/movies/index']],
-        ['label' => '<i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;&nbsp;Genres', 'url' => ['/genres/index']],
-        ['label' => '<i class="fa fa-globe" aria-hidden="true"></i>&nbsp;&nbsp;Countries', 'url' => ['/countries/index']],
+        [
+            'label' => '<i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;Movies',
+            'url' => ['/movies/index'],
+            'visible' => !Yii::$app->user->isGuest
+        ],
+        [
+            'label' => '<i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;&nbsp;Genres',
+            'url' => ['/genres/index'],
+            'visible' => !Yii::$app->user->isGuest
+        ],
+        [
+            'label' => '<i class="fa fa-globe" aria-hidden="true"></i>&nbsp;&nbsp;Countries',
+            'url' => ['/countries/index'],
+            'visible' => !Yii::$app->user->isGuest
+        ],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

@@ -7,28 +7,13 @@ use backend\models\Movies;
 use backend\models\MoviesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use backend\controllers\BaseController;
 
 /**
  * MoviesController implements the CRUD actions for Movies model.
  */
-class MoviesController extends Controller
+class MoviesController extends BaseController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-//                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Movies models.
      * @return mixed

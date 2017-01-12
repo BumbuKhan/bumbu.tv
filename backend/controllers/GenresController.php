@@ -7,28 +7,13 @@ use backend\models\Genres;
 use backend\models\GenresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use backend\controllers\BaseController;
 
 /**
  * GenresController implements the CRUD actions for Genres model.
  */
-class GenresController extends Controller
+class GenresController extends BaseController
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-//                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Genres models.
      * @return mixed
