@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use dosamigos\datepicker\DatePicker;
+use kartik\color\ColorInput;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Movies */
@@ -32,15 +34,37 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'poster_right')->fileInput() ?>
 
-    <?= $form->field($model, 'gradient_start_color')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'gradient_start_color')->widget(
+        ColorInput::classname(), [
+            'options' => ['placeholder' => 'Select color ...'],
+        ]) ?>
 
-    <?= $form->field($model, 'gradient_end_color')->textInput(['maxlength' => true]) ?>
+    <?/*= $form->field($model, 'gradient_end_color')->textInput(['maxlength' => true]) */?>
+    <?= $form->field($model, 'gradient_end_color')->widget(
+        ColorInput::classname(), [
+            'options' => ['placeholder' => 'Select color ...'],
+        ]) ?>
 
     <?= $form->field($model, 'level')->dropDownList(['beginner' => 'Beginner', 'elementary' => 'Elementary', 'pre-intermediate' => 'Pre-intermediate', 'intermediate' => 'Intermediate', 'upper-intermediate' => 'Upper-intermediate', 'advanced' => 'Advanced', 'proficient' => 'Proficient',], ['prompt' => '']) ?>
 
-    <?= $form->field($model, 'duration')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'duration', [
+        'template' => '{label}<div class="input-group">{input}<span class="input-group-addon">min</span></div>{error}'
+    ])->textInput([
+        'maxlength' => true,
+    ]) ?>
 
-    <?= $form->field($model, 'issue_date')->textInput() ?>
+    <?= $form->field($model, 'issue_date')->widget(
+        DatePicker::className(), [
+            // inline too, not bad
+            'inline' => false,
+            // modify template for custom rendering
+            //'template' => '<div class="well well-sm" style="background-color: #fff; width:250px">{input}</div>',
+            'clientOptions' => [
+                'autoclose' => true,
+                'format' => 'yyyy-mm-dd'
+            ]
+        ]
+    ) ?>
 
     <?= $form->field($model, 'src')->textInput(['maxlength' => true]) ?>
 
