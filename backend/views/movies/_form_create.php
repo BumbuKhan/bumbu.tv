@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
+use dosamigos\fileupload\FileUploadUI;
 use kartik\color\ColorInput;
 
 /* @var $this yii\web\View */
@@ -22,8 +23,30 @@ use kartik\color\ColorInput;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'poster_small')->fileInput() ?>
-
+<!--    --><?//= $form->field($model, 'poster_small')->fileInput() ?>
+    <?= FileUploadUI::widget([
+        'model' => $model,
+        'attribute' => 'poster_small',
+        'url' => ['media/upload', 'id' => $tour_id],
+        'gallery' => true,
+        'fieldOptions' => [
+            'accept' => 'image/*'
+        ],
+        'clientOptions' => [
+            'maxFileSize' => 2000000
+        ],
+        // ...
+        'clientEvents' => [
+            'fileuploaddone' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+            'fileuploadfail' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+        ],
+    ]); ?>
     <?= $form->field($model, 'poster_big')->fileInput() ?>
 
     <?= $form->field($model, 'episode_shot')->fileInput() ?>
