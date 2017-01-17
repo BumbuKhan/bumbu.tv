@@ -79,7 +79,7 @@ class Movies extends \yii\db\ActiveRecord
 //            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'string', 'max' => 100],
             ['poster_small', 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
             [['gradient_start_color', 'gradient_end_color'], 'string', 'max' => 7],
-            [['duration'], 'string', 'max' => 8],
+            [['duration'], 'integer', 'max' => 999],
         ];
     }
 
