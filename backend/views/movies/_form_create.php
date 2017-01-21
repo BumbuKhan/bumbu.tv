@@ -31,8 +31,6 @@ use kartik\color\ColorInput;
 
     <?= $form->field($model, 'poster_left')->fileInput() ?>
 
-    <?= $form->field($model, 'poster_middle')->fileInput() ?>
-
     <?= $form->field($model, 'poster_right')->fileInput() ?>
 
     <?= $form->field($model, 'gradient_start_color')->widget(

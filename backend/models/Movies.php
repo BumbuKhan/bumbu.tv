@@ -15,7 +15,6 @@ use yii\web\UploadedFile;
  * @property string $poster_big
  * @property string $episode_shot
  * @property string $poster_left
- * @property string $poster_middle
  * @property string $poster_right
  * @property string $gradient_start_color
  * @property string $gradient_end_color
@@ -58,7 +57,7 @@ class Movies extends \yii\db\ActiveRecord
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_DEFAULT']] = ['type'];
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']] = array_merge($common_fields,
             ['poster_small', 'poster_big', 'level', 'trailer_src']);
-        $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src', 'poster_left', 'poster_middle', 'poster_right', 'gradient_start_color', 'gradient_end_color']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src', 'poster_left', 'poster_right', 'gradient_start_color', 'gradient_end_color']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE']] = array_merge($common_fields, ['episode_shot']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_TED_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'ted_original']);
@@ -72,7 +71,7 @@ class Movies extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right', 'gradient_start_color', 'gradient_end_color', 'type', 'level', 'duration', 'issue_date', 'src', 'trailer_src', 'ted_original', 'subtitle', 'add_datetime', 'view_amount'], 'required'],
+            [['title', 'description', 'poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_right', 'gradient_start_color', 'gradient_end_color', 'type', 'level', 'duration', 'issue_date', 'src', 'trailer_src', 'ted_original', 'subtitle', 'add_datetime', 'view_amount'], 'required'],
             [['description', 'type', 'level', 'is_blocked', 'is_deleted'], 'string'],
             [['issue_date', 'add_datetime'], 'safe'],
             [['view_amount'], 'integer'],
@@ -80,7 +79,7 @@ class Movies extends \yii\db\ActiveRecord
             ['poster_small', 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
             [['gradient_start_color', 'gradient_end_color'], 'string', 'max' => 7],
             [['duration'], 'integer', 'max' => 999],
-            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'image', 'extensions' => ['png', 'jpg']],
+            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_right'], 'image', 'extensions' => ['png', 'jpg']],
             [['subtitle'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'vtt'],
         ];
     }
@@ -98,7 +97,6 @@ class Movies extends \yii\db\ActiveRecord
             'poster_big' => 'Poster Big',
             'episode_shot' => 'Episode Shot',
             'poster_left' => 'Poster Left',
-            'poster_middle' => 'Poster Middle',
             'poster_right' => 'Poster Right',
             'gradient_start_color' => 'Gradient Start Color',
             'gradient_end_color' => 'Gradient End Color',
@@ -135,27 +133,57 @@ class Movies extends \yii\db\ActiveRecord
 
     public function upload($movie_type)
     {
-        $this->subtitle->saveAs(Yii::getAlias('@subtitles') . $this->subtitle->baseName . '.' . $this->subtitle->extension);
+        $titles = [];
+
+        $subtitle_title = $this->generateUniqueRandomString() . '.' . $this->subtitle->extension;
+        $this->subtitle->saveAs(Yii::getAlias('@subtitles') . $subtitle_title);
+        $titles['subtitle'] = $subtitle_title;
 
         switch ($movie_type) {
             case 'series':
-                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $this->poster_small->baseName . '.' . $this->poster_small->extension);
-                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $this->poster_big->baseName . '.' . $this->poster_big->extension);
-                $this->poster_left->saveAs(Yii::getAlias('@poster_small') . $this->poster_left->baseName . '.' . $this->poster_left->extension);
-                $this->poster_middle->saveAs(Yii::getAlias('@poster_small') . $this->poster_middle->baseName . '.' . $this->poster_middle->extension);
-                $this->poster_right->saveAs(Yii::getAlias('@poster_small') . $this->poster_right->baseName . '.' . $this->poster_right->extension);
+                $poster_big_title = $this->generateUniqueRandomString() . '.' . $this->poster_big->extension;
+                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $poster_big_title);
+                $titles['poster_big'] = $poster_big_title;
+
+                $poster_small_title = $this->generateUniqueRandomString() . '.' . $this->poster_small->extension;
+                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $poster_small_title);
+                $titles['poster_small'] = $poster_small_title;
+
+                $poster_left_title = $this->generateUniqueRandomString() . '.' . $this->poster_left->extension;
+                $this->poster_left->saveAs(Yii::getAlias('@poster_small') . $poster_left_title);
+                $titles['poster_left'] = $poster_left_title;
+
+                $poster_right_title = $this->generateUniqueRandomString() . '.' . $this->poster_right->extension;
+                $this->poster_right->saveAs(Yii::getAlias('@poster_small') . $poster_right_title);
+                $titles['poster_right'] = $poster_right_title;
                 break;
             case 'episode':
-                $this->episode_shot->saveAs(Yii::getAlias('@episodes') . $this->episode_shot->baseName . '.' . $this->episode_shot->extension);
+                $episode_shot_title = $this->generateUniqueRandomString() . '.' . $this->episode_shot->extension;
+                $this->episode_shot->saveAs(Yii::getAlias('@episodes') . $episode_shot_title);
+                $titles['episode_shot'] = $episode_shot_title;
                 break;
             case 'movie':
             case 'cartoon':
             case 'ted':
-                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $this->poster_small->baseName . '.' . $this->poster_small->extension);
-                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $this->poster_big->baseName . '.' . $this->poster_big->extension);
+                $poster_small_title = $this->generateUniqueRandomString() . '.' . $this->poster_small->extension;
+                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $poster_small_title);
+                $titles['poster_small'] = $poster_small_title;
+
+                $poster_big_title = $this->generateUniqueRandomString() . '.' . $this->poster_big->extension;
+                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $poster_big_title);
+                $titles['poster_big'] = $poster_big_title;
                 break;
             default:
                 return false;
         }
+
+        Yii::$app->db->createCommand()->update(Movies::tableName(), $titles, ['id' => Yii::$app->db->getLastInsertID()])->execute();
+
+        return true;
+    }
+
+    public function generateUniqueRandomString()
+    {
+        return uniqid(time());
     }
 }

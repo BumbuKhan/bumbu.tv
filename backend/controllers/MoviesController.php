@@ -94,7 +94,6 @@ class MoviesController extends BaseController
             $model->poster_big = UploadedFile::getInstance($model, 'poster_big');
             $model->episode_shot = UploadedFile::getInstance($model, 'episode_shot');
             $model->poster_left = UploadedFile::getInstance($model, 'poster_left');
-            $model->poster_middle = UploadedFile::getInstance($model, 'poster_middle');
             $model->poster_right = UploadedFile::getInstance($model, 'poster_right');
             $model->subtitle = UploadedFile::getInstance($model, 'subtitle');
 

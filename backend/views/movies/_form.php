@@ -24,8 +24,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'poster_left')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'poster_middle')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'poster_right')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'gradient_start_color')->textInput(['maxlength' => true]) ?>
