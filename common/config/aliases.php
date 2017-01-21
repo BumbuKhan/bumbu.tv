@@ -3,14 +3,16 @@ return [
     'aliases' => [
         '@uploads' => '@frontend/web/uploads/',
         // movies PATHs
-        '@episodes' => '@uploads/movies/episodes/',
-        '@poster_small' => '@uploads/movies/posters/small/',
-        '@poster_big' => '@uploads/movies/posters/big/',
-        '@shot_thumb' => '@uploads/movies/shots/thumb/',
-        '@shot_big' => '@uploads/movies/shots/big/',
-        '@shot_original' => '@uploads/movies/shots/original/',
-        '@subtitles' => '@uploads/movies/subtitles/',
-        '@src' => '@uploads/movies/src/',
+        '@poster_small' => '@uploads/movies/posters/small/',    /* Movie's small poster */
+        '@poster_big' => '@uploads/movies/posters/big/',        /* Movie's big poster */
+
+        '@shot_thumb' => '@uploads/movies/shots/thumb/',        /* Movie's photo gallery */
+        '@shot_big' => '@uploads/movies/shots/big/',            /* Movie's photo gallery */
+        '@shot_original' => '@uploads/movies/shots/original/',  /* Movie's photo gallery */
+
+        '@subtitles' => '@uploads/movies/subtitles/',           /* Subtitles for movie */
+        '@episodes' => '@uploads/movies/episodes/',             /* Episodes for series */
+        '@src' => '@uploads/movies/src/',                       /* Movie itself */
     ],
 ];
 

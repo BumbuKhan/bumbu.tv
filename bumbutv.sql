@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 07 2017 г., 17:22
+-- Время создания: Янв 21 2017 г., 16:17
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -71,10 +71,10 @@ CREATE TABLE IF NOT EXISTS `movies` (
   `description` text NOT NULL,
   `poster_small` varchar(100) NOT NULL COMMENT 'Main poster for the movie',
   `poster_big` varchar(100) NOT NULL COMMENT 'Background poster with blur effect',
-  `episode_shot` varchar(100) NOT NULL COMMENT 'For series only, showing on ''series_view'' page',
-  `poster_left` varchar(100) NOT NULL COMMENT 'For series only, showing on main page',
-  `poster_middle` varchar(100) NOT NULL COMMENT 'For series only, showing on main page',
-  `poster_right` varchar(100) NOT NULL COMMENT 'For series only, showing on main page',
+  `episode_shot` varchar(100) DEFAULT NULL COMMENT 'For series only, showing on ''series_view'' page',
+  `poster_left` varchar(100) DEFAULT NULL COMMENT 'For series only, showing on main page',
+  `poster_middle` varchar(100) DEFAULT NULL COMMENT 'For series only, showing on main page',
+  `poster_right` varchar(100) DEFAULT NULL COMMENT 'For series only, showing on main page',
   `gradient_start_color` varchar(7) NOT NULL COMMENT 'For series only, showing on main page',
   `gradient_end_color` varchar(7) NOT NULL COMMENT 'For series only, showing on main page',
   `type` enum('movie','series','cartoon','ted','episode') NOT NULL,
@@ -231,15 +231,15 @@ ALTER TABLE `user`
 -- Ограничения внешнего ключа таблицы `movie_country_rel`
 --
 ALTER TABLE `movie_country_rel`
-  ADD CONSTRAINT `movie_country_rel_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`),
-  ADD CONSTRAINT `movie_country_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`);
+  ADD CONSTRAINT `movie_country_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`),
+  ADD CONSTRAINT `movie_country_rel_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `movie_genre_rel`
 --
 ALTER TABLE `movie_genre_rel`
-  ADD CONSTRAINT `movie_genre_rel_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`),
-  ADD CONSTRAINT `movie_genre_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`);
+  ADD CONSTRAINT `movie_genre_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`),
+  ADD CONSTRAINT `movie_genre_rel_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

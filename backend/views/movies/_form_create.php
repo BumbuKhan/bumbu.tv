@@ -68,6 +68,7 @@ use kartik\color\ColorInput;
     ) ?>
 
     <?= $form->field($model, 'src')->textInput(['maxlength' => true]) ?>
+<!--    --><?//= $form->field($model, 'src')->fileInput() ?>
 
     <?= $form->field($model, 'trailer_src')->textInput(['maxlength' => true]) ?>
 

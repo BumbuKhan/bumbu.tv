@@ -56,7 +56,8 @@ class Movies extends \yii\db\ActiveRecord
         $common_fields = ['type', 'title', 'description', 'duration', 'issue_date', 'src', 'subtitle',];
 
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_DEFAULT']] = ['type'];
-        $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']] = array_merge($common_fields,
+            ['poster_small', 'poster_big', 'level', 'trailer_src']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src', 'poster_left', 'poster_middle', 'poster_right', 'gradient_start_color', 'gradient_end_color']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE']] = array_merge($common_fields, ['episode_shot']);
         $scenarios[Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big', 'level', 'trailer_src']);
@@ -75,11 +76,12 @@ class Movies extends \yii\db\ActiveRecord
             [['description', 'type', 'level', 'is_blocked', 'is_deleted'], 'string'],
             [['issue_date', 'add_datetime'], 'safe'],
             [['view_amount'], 'integer'],
-            [['title', 'src', 'trailer_src', 'ted_original', 'subtitle'], 'string', 'max' => 255],
-//            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'string', 'max' => 100],
+            [['title', 'src', 'trailer_src', 'ted_original'], 'string', 'max' => 255],
             ['poster_small', 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg'],
             [['gradient_start_color', 'gradient_end_color'], 'string', 'max' => 7],
             [['duration'], 'integer', 'max' => 999],
+            [['poster_small', 'poster_big', 'episode_shot', 'poster_left', 'poster_middle', 'poster_right'], 'image', 'extensions' => ['png', 'jpg']],
+            [['subtitle'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'vtt'],
         ];
     }
 
@@ -129,5 +131,31 @@ class Movies extends \yii\db\ActiveRecord
     public function getMovieGenreRels()
     {
         return $this->hasMany(MovieGenreRel::className(), ['movie_id' => 'id']);
+    }
+
+    public function upload($movie_type)
+    {
+        $this->subtitle->saveAs(Yii::getAlias('@subtitles') . $this->subtitle->baseName . '.' . $this->subtitle->extension);
+
+        switch ($movie_type) {
+            case 'series':
+                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $this->poster_small->baseName . '.' . $this->poster_small->extension);
+                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $this->poster_big->baseName . '.' . $this->poster_big->extension);
+                $this->poster_left->saveAs(Yii::getAlias('@poster_small') . $this->poster_left->baseName . '.' . $this->poster_left->extension);
+                $this->poster_middle->saveAs(Yii::getAlias('@poster_small') . $this->poster_middle->baseName . '.' . $this->poster_middle->extension);
+                $this->poster_right->saveAs(Yii::getAlias('@poster_small') . $this->poster_right->baseName . '.' . $this->poster_right->extension);
+                break;
+            case 'episode':
+                $this->episode_shot->saveAs(Yii::getAlias('@episodes') . $this->episode_shot->baseName . '.' . $this->episode_shot->extension);
+                break;
+            case 'movie':
+            case 'cartoon':
+            case 'ted':
+                $this->poster_small->saveAs(Yii::getAlias('@poster_small') . $this->poster_small->baseName . '.' . $this->poster_small->extension);
+                $this->poster_big->saveAs(Yii::getAlias('@poster_big') . $this->poster_big->baseName . '.' . $this->poster_big->extension);
+                break;
+            default:
+                return false;
+        }
     }
 }
