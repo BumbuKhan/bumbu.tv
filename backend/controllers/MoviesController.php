@@ -89,13 +89,21 @@ class MoviesController extends BaseController
             // loading post data to the model
             $model->load($post);
 
+            $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
+            $model->poster_big = UploadedFile::getInstance($model, 'poster_big');
+            $model->episode_shot = UploadedFile::getInstance($model, 'episode_shot');
+            $model->poster_left = UploadedFile::getInstance($model, 'poster_left');
+            $model->poster_right = UploadedFile::getInstance($model, 'poster_right');
+            $model->subtitle = UploadedFile::getInstance($model, 'subtitle');
+
             if ($model->validate()) {
                 $model->add_datetime = date('Y-m-d h:i:s', time());
 
                 $model->save();
 
                 // uploading files...
-                //$model->upload($movie_type);
+                $model->upload($movie_type);
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
