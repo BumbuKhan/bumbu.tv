@@ -3,7 +3,8 @@
 namespace backend\models;
 
 use Yii;
-use yii\web\UploadedFile;
+use \mongosoft\file\UploadImageBehavior;
+use \mongosoft\file\UploadBehavior;
 
 /**
  * This is the model class for table "movies".
@@ -42,6 +43,64 @@ class Movies extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'movies';
+    }
+
+    public function behaviors()
+    {
+        /* scenarios */
+        $movie_create = Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE'];
+        $series_create = Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE'];
+        $series_episode_create = Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE'];
+        $cartoon_create = Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE'];
+        $ted_create = Yii::$app->params['SCENARIO_MOVIES_TED_CREATE'];
+
+        return [
+            [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'poster_small',
+                'scenarios' => [$movie_create, $series_create, $series_episode_create, $cartoon_create, $ted_create],
+                'path' => '@poster_small/',
+                'url' => '@poster_small/',
+                'thumbs' => [
+                    'thumb' => ['width' => 200, 'height' => 300, 'quality' => 100],
+                ],
+            ],
+            [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'poster_big',
+                'scenarios' => [$movie_create, $series_create, $cartoon_create, $ted_create],
+                'path' => '@poster_big/',
+                'url' => '@poster_big/',
+            ],
+            [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'episode_shot',
+                'scenarios' => [$series_episode_create],
+                'path' => '@episodes/',
+                'url' => '@episodes/',
+            ],
+            [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'poster_left',
+                'scenarios' => [$series_episode_create],
+                'path' => '@poster_small/',
+                'url' => '@poster_small/',
+            ],
+            [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'poster_right',
+                'scenarios' => [$series_episode_create],
+                'path' => '@poster_small/',
+                'url' => '@poster_small/',
+            ],
+            [
+                'class' => UploadBehavior::className(),
+                'attribute' => 'subtitle',
+                'scenarios' => [$movie_create, $series_create, $series_episode_create, $cartoon_create, $ted_create],
+                'path' => '@subtitles/',
+                'url' => '@subtitles/',
+            ],
+        ];
     }
 
     /**
@@ -131,7 +190,7 @@ class Movies extends \yii\db\ActiveRecord
         return $this->hasMany(MovieGenreRel::className(), ['movie_id' => 'id']);
     }
 
-    public function upload($movie_type)
+    /*public function upload($movie_type)
     {
         $titles = [];
 
@@ -180,10 +239,10 @@ class Movies extends \yii\db\ActiveRecord
         Yii::$app->db->createCommand()->update(Movies::tableName(), $titles, ['id' => Yii::$app->db->getLastInsertID()])->execute();
 
         return true;
-    }
+    }*/
 
-    public function generateUniqueRandomString()
+    /*public function generateUniqueRandomString()
     {
         return uniqid(time());
-    }
+    }*/
 }
