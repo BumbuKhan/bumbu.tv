@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description:ntext',
             'poster_small',
+            'poster_big',
         ],
     ]) ?>
 

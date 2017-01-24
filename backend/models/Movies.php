@@ -11,6 +11,7 @@ use Yii;
  * @property string $title
  * @property string $description
  * @property string $poster_small
+ * @property string $poster_big
  */
 class Movies extends \yii\db\ActiveRecord
 {
@@ -28,10 +29,11 @@ class Movies extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'poster_small'], 'required'],
+            [['title', 'description', 'poster_small', 'poster_big'], 'required'],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 200],
             [['poster_small'], 'image', 'extensions' => 'png, jpg, jpeg', 'minWidth' => 200, 'maxWidth' => 250, 'minHeight' => 300, 'maxHeight' => 350, 'maxSize' => 1024 * 1024 * 2],
+            [['poster_big'], 'image', 'extensions' => 'png, jpg, jpeg', /*'minWidth' => 980, 'maxWidth' => 1200, 'minHeight' => 300, 'maxHeight' => 600, 'maxSize' => 1024 * 1024 * 2*/],
         ];
     }
 
@@ -45,6 +47,7 @@ class Movies extends \yii\db\ActiveRecord
             'title' => 'Title',
             'description' => 'Description',
             'poster_small' => 'Poster Small',
+            'poster_big' => 'Poster Big',
         ];
     }
 
