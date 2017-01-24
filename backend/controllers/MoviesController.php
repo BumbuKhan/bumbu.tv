@@ -92,6 +92,8 @@ class MoviesController extends Controller
                     $image
                         ->fromFile($poster_big->tempName)
                         ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
+                        ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
+                        ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
                         ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
 
                 } catch (Exception $err) {
@@ -148,6 +150,8 @@ class MoviesController extends Controller
                     $image
                         ->fromFile($poster_big->tempName)
                         ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
+                        ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
+                        ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
                         ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
 
                 } catch (Exception $err) {
