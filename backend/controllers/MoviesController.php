@@ -7,14 +7,29 @@ use backend\models\Movies;
 use backend\models\MoviesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use backend\controllers\BaseController;
+use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
  * MoviesController implements the CRUD actions for Movies model.
  */
-class MoviesController extends BaseController
+class MoviesController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
     /**
      * Lists all Movies models.
      * @return mixed
@@ -51,66 +66,22 @@ class MoviesController extends BaseController
     {
         $model = new Movies();
 
-        // getting request
-        $request = Yii::$app->request;
+        if ($model->load(Yii::$app->request->post())) {
+            $unique_id = uniqid(time());
 
-        if ($request->isPost) {
-            // getting post
-            $post = $request->post();
+            $poster_small = UploadedFile::getInstance($model, 'poster_small');
+            $model->poster_small = $unique_id . '.' . $poster_small->extension;
 
-            // getting type of movie
-            $movie_type = $post['Movies']['type'];
-
-            // setting scenario up depending on $movie_type
-            $scenario_to_setup = '';
-
-            switch ($movie_type) {
-                case 'movie':
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE'];
-                    break;
-                case 'series':
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_SERIES_CREATE'];
-                    break;
-                case 'episode':
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_SERIES_EPISODE_CREATE'];
-                    break;
-                case 'cartoon':
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_CARTOON_CREATE'];
-                    break;
-                case 'ted':
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_TED_CREATE'];
-                    break;
-                default:
-                    $scenario_to_setup = Yii::$app->params['SCENARIO_MOVIES_DEFAULT'];
+            if ($model->save()) {
+                $poster_small->saveAs(Yii::getAlias('@poster_small') . $model->poster_small);
             }
 
-            $model->scenario = $scenario_to_setup;
-
-            // loading post data to the model
-            $model->load($post);
-
-            $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
-            $model->poster_big = UploadedFile::getInstance($model, 'poster_big');
-            $model->episode_shot = UploadedFile::getInstance($model, 'episode_shot');
-            $model->poster_left = UploadedFile::getInstance($model, 'poster_left');
-            $model->poster_right = UploadedFile::getInstance($model, 'poster_right');
-            $model->subtitle = UploadedFile::getInstance($model, 'subtitle');
-
-            if ($model->validate()) {
-                $model->add_datetime = date('Y-m-d h:i:s', time());
-
-                $model->save();
-
-                // uploading files...
-                $model->upload($movie_type);
-
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -123,7 +94,19 @@ class MoviesController extends BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $small_poster_before_update = $model->poster_small;
+
+        if ($model->load(Yii::$app->request->post())) {
+            $unique_id = uniqid(time());
+
+            $poster_small = UploadedFile::getInstance($model, 'poster_small');
+            $model->poster_small = $unique_id . '.' . $poster_small->extension;
+
+            if ($model->save()) {
+                Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old
+                $poster_small->saveAs(Yii::getAlias('@poster_small') . $model->poster_small); // uploading new
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -138,12 +121,18 @@ class MoviesController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    /*public function actionDelete($id)
+    public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if (!empty($model->poster_small)) {
+            Movies::removeFile(Yii::getAlias('@poster_small') . $model->poster_small);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
-    }*/
+    }
 
     /**
      * Finds the Movies model based on its primary key value.
