@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use claviska\SimpleImage;
 
 /**
  * MoviesController implements the CRUD actions for Movies model.
@@ -68,12 +69,28 @@ class MoviesController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $unique_id = uniqid(time()); // Unique ID for file names
-
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
+
             $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
 
             if ($model->save()) {
-                $poster_small->saveAs(Yii::getAlias('@poster_small') . $model->poster_small);
+                try {
+                    // Create a new SimpleImage object
+                    $image = new SimpleImage();
+
+                    $img_width = Yii::$app->params['poster_small_width'];
+                    $img_height = Yii::$app->params['poster_small_height'];
+                    $img_anchor = Yii::$app->params['poster_small_anchor'];
+
+                    $image
+                        ->fromFile($poster_small->tempName)
+                        ->thumbnail($img_width, $img_height, $img_anchor)
+                        ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
+
+                } catch (Exception $err) {
+                    // Handle errors
+                    echo $err->getMessage();
+                }
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
@@ -104,7 +121,24 @@ class MoviesController extends Controller
 
             if ($model->save()) {
                 Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old
-                $poster_small->saveAs(Yii::getAlias('@poster_small') . $model->poster_small); // uploading new
+
+                try {
+                    // Create a new SimpleImage object
+                    $image = new SimpleImage();
+
+                    $img_width = Yii::$app->params['poster_small_width'];
+                    $img_height = Yii::$app->params['poster_small_height'];
+                    $img_anchor = Yii::$app->params['poster_small_anchor'];
+
+                    $image
+                        ->fromFile($poster_small->tempName)
+                        ->thumbnail($img_width, $img_height, $img_anchor)
+                        ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
+
+                } catch (Exception $err) {
+                    // Handle errors
+                    echo $err->getMessage();
+                }
             }
 
             return $this->redirect(['view', 'id' => $model->id]);

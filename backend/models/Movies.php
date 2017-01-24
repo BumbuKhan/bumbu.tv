@@ -31,7 +31,7 @@ class Movies extends \yii\db\ActiveRecord
             [['title', 'description', 'poster_small'], 'required'],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 200],
-            [['poster_small'], 'image', 'extensions' => 'png, jpg'],
+            [['poster_small'], 'image', 'extensions' => 'png, jpg, jpeg', 'minWidth' => 200, 'maxWidth' => 250, 'minHeight' => 300, 'maxHeight' => 350, 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
