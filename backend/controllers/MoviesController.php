@@ -67,10 +67,10 @@ class MoviesController extends Controller
         $model = new Movies();
 
         if ($model->load(Yii::$app->request->post())) {
-            $unique_id = uniqid(time());
+            $unique_id = uniqid(time()); // Unique ID for file names
 
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
-            $model->poster_small = $unique_id . '.' . $poster_small->extension;
+            $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
 
             if ($model->save()) {
                 $poster_small->saveAs(Yii::getAlias('@poster_small') . $model->poster_small);
@@ -100,7 +100,7 @@ class MoviesController extends Controller
             $unique_id = uniqid(time());
 
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
-            $model->poster_small = $unique_id . '.' . $poster_small->extension;
+            $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
 
             if ($model->save()) {
                 Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old

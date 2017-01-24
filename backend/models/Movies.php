@@ -54,6 +54,6 @@ class Movies extends \yii\db\ActiveRecord
      */
     public static function removeFile($file)
     {
-        return unlink($file);
+        return @unlink($file);
     }
 }
