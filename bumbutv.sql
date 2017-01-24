@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 25 2017 г., 00:24
+-- Время создания: Янв 25 2017 г., 02:11
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS `movies` (
   `id` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
-  `poster_small` varchar(40) NOT NULL
+  `poster_small` varchar(40) NOT NULL,
+  `poster_big` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
