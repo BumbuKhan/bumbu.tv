@@ -23,17 +23,37 @@ class Movies extends \yii\db\ActiveRecord
         return 'movies';
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        // this field are common for all types of movies
+        $common_fields = ['title', 'description'];
+
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']] = array_merge($common_fields, ['poster_small', 'poster_big']);
+        $scenarios[Yii::$app->params['SCENARIO_MOVIES_MOVIE_EDIT']] = array_merge($common_fields, ['poster_small', 'poster_big']);
+
+        return $scenarios;
+    }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['title', 'description', 'poster_small', 'poster_big'], 'required'],
+            [['title', 'description'], 'required'],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 200],
-            [['poster_small'], 'image', 'extensions' => 'png, jpg, jpeg', 'minWidth' => 200, 'maxWidth' => 250, 'minHeight' => 300, 'maxHeight' => 350, 'maxSize' => 1024 * 1024 * 2],
-            [['poster_big'], 'image', 'extensions' => 'png, jpg, jpeg', /*'minWidth' => 980, 'maxWidth' => 1200, 'minHeight' => 300, 'maxHeight' => 600, 'maxSize' => 1024 * 1024 * 2*/],
+
+            // on add
+            [['poster_small', 'poster_big'], 'required', 'on' => Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']],
+            [['poster_small'], 'image', 'extensions' => 'png, jpg, jpeg', 'minWidth' => 200, 'maxWidth' => 250, 'minHeight' => 300, 'maxHeight' => 350, 'maxSize' => 1024 * 1024 * 2, 'on' => Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']],
+            [['poster_big'], 'image', 'extensions' => 'png, jpg, jpeg', 'on' => Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE']],
+
+            // on edit
+            [['poster_small'], 'image', 'extensions' => 'png, jpg, jpeg', 'minWidth' => 200, 'maxWidth' => 250, 'minHeight' => 300, 'maxHeight' => 350, 'maxSize' => 1024 * 1024 * 2, 'skipOnEmpty' => true, 'on' => Yii::$app->params['SCENARIO_MOVIES_MOVIE_EDIT']],
+            [['poster_big'], 'image', 'extensions' => 'png, jpg, jpeg', 'skipOnEmpty' => true, 'on' => Yii::$app->params['SCENARIO_MOVIES_MOVIE_EDIT']],
         ];
     }
 

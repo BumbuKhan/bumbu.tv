@@ -67,6 +67,8 @@ class MoviesController extends Controller
     {
         $model = new Movies();
 
+        $model->scenario = Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE'];
+
         if ($model->load(Yii::$app->request->post())) {
             $unique_id = uniqid(time()); // Unique ID for file name
 
@@ -122,6 +124,8 @@ class MoviesController extends Controller
         $small_poster_before_update = $model->poster_small;
         $big_poster_before_update = $model->poster_big;
 
+        $model->scenario = Yii::$app->params['SCENARIO_MOVIES_MOVIE_EDIT'];
+
         if ($model->load(Yii::$app->request->post())) {
             $unique_id = uniqid(time());
 
@@ -134,26 +138,34 @@ class MoviesController extends Controller
             $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
 
             if ($model->save()) {
-                Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old
-                Movies::removeFile(Yii::getAlias('@poster_big') . $big_poster_before_update); // deleting old
+                if (!empty($poster_small)) {
+                    Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old
+                }
+
+                if (!empty($poster_big)) {
+                    Movies::removeFile(Yii::getAlias('@poster_big') . $big_poster_before_update); // deleting old
+                }
 
                 try {
                     $image = new SimpleImage();
 
                     // saving poster_small
-                    $image
-                        ->fromFile($poster_small->tempName)
-                        ->thumbnail(Yii::$app->params['poster_small_width'], Yii::$app->params['poster_small_height'], Yii::$app->params['poster_small_anchor'])
-                        ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
+                    if (!empty($poster_small)) {
+                        $image
+                            ->fromFile($poster_small->tempName)
+                            ->thumbnail(Yii::$app->params['poster_small_width'], Yii::$app->params['poster_small_height'], Yii::$app->params['poster_small_anchor'])
+                            ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
+                    }
 
                     // saving poster_big
-                    $image
-                        ->fromFile($poster_big->tempName)
-                        ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
-                        ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
-                        ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
-                        ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
-
+                    if (!empty($poster_big)) {
+                        $image
+                            ->fromFile($poster_big->tempName)
+                            ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
+                            ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
+                            ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
+                            ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
+                    }
                 } catch (Exception $err) {
                     echo $err->getMessage();
                 }

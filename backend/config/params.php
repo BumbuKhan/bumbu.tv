@@ -2,6 +2,20 @@
 return [
     'adminEmail' => 'admin@example.com',
 
+    // scenarios
+    'SCENARIO_MOVIES_MOVIE_CREATE' => 'movie_create',
+    'SCENARIO_MOVIES_SERIES_CREATE' => 'series_create',
+    'SCENARIO_MOVIES_SERIES_EPISODE_CREATE' => 'series_episode_create',
+    'SCENARIO_MOVIES_CARTOON_CREATE' => 'cartoon_create',
+    'SCENARIO_MOVIES_TED_CREATE' => 'ted_create',
+    'SCENARIO_MOVIES_DEFAULT' => 'default',
+
+    'SCENARIO_MOVIES_MOVIE_EDIT' => 'movie_edit',
+    'SCENARIO_MOVIES_SERIES_EDIT' => 'series_edit',
+    'SCENARIO_MOVIES_SERIES_EPISODE_EDIT' => 'series_episode_edit',
+    'SCENARIO_MOVIES_CARTOON_EDIT' => 'cartoon_edit',
+    'SCENARIO_MOVIES_TED_EDIT' => 'ted_edit',
+
     // params for movie's mediafiles
     'poster_small_width' => 200,
     'poster_small_height' => 300,
