@@ -19,7 +19,7 @@ class MoviesSearch extends Movies
     {
         return [
             [['id'], 'integer'],
-            [['title', 'description', 'poster_small'], 'safe'],
+            [['type', 'title', 'description', 'poster_small', 'poster_big'], 'safe'],
         ];
     }
 
@@ -62,9 +62,11 @@ class MoviesSearch extends Movies
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
+        $query->andFilterWhere(['like', 'type', $this->type])
+            ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'poster_small', $this->poster_small]);
+            ->andFilterWhere(['like', 'poster_small', $this->poster_small])
+            ->andFilterWhere(['like', 'poster_big', $this->poster_big]);
 
         return $dataProvider;
     }

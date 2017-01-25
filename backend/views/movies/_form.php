@@ -10,7 +10,11 @@ use yii\widgets\ActiveForm;
 
 <div class="movies-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'enableClientScript' => false
+    ]); ?>
+
+    <?= $form->field($model, 'type')->dropDownList([ 'movie' => 'Movie', 'series' => 'Series', 'series_episode' => 'Series episode', 'ted' => 'Ted', 'cartoon' => 'Cartoon', ], ['prompt' => '']) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 

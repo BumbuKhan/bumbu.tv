@@ -9,7 +9,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use claviska\SimpleImage;
 
 /**
  * MoviesController implements the CRUD actions for Movies model.
@@ -67,43 +66,36 @@ class MoviesController extends Controller
     {
         $model = new Movies();
 
-        $model->scenario = Yii::$app->params['SCENARIO_MOVIES_MOVIE_CREATE'];
+        $model->scenario = 'movie_create';
 
         if ($model->load(Yii::$app->request->post())) {
-            $unique_id = uniqid(time()); // Unique ID for file name
 
-            // loading to the temporary folder
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
             $poster_big = UploadedFile::getInstance($model, 'poster_big');
 
-            // picking up file name
-            $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
-            $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
+            $unique_id = uniqid(time());
 
-            if ($model->save()) {
-                try {
-                    $image = new SimpleImage();
-
-                    // saving poster_small
-                    $image
-                        ->fromFile($poster_small->tempName)
-                        ->thumbnail(Yii::$app->params['poster_small_width'], Yii::$app->params['poster_small_height'], Yii::$app->params['poster_small_anchor'])
-                        ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
-
-                    // saving poster_big
-                    $image
-                        ->fromFile($poster_big->tempName)
-                        ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
-                        ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
-                        ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
-                        ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
-
-                } catch (Exception $err) {
-                    echo $err->getMessage();
-                }
+            if (!empty($poster_small)) {
+                $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
             }
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            if (!empty($poster_big)) {
+                $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
+            }
+
+            if ($model->validate()) {
+
+                $poster_small->saveAs($model->poster_small);
+                $poster_big->saveAs($model->poster_big);
+
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -121,67 +113,52 @@ class MoviesController extends Controller
     {
         $model = $this->findModel($id);
 
-        $small_poster_before_update = $model->poster_small;
-        $big_poster_before_update = $model->poster_big;
+        $model->scenario = 'movie_update';
 
-        $model->scenario = Yii::$app->params['SCENARIO_MOVIES_MOVIE_EDIT'];
+        $poster_small_before_update = $model->poster_small;
+        $poster_big_before_update = $model->poster_big;
 
         if ($model->load(Yii::$app->request->post())) {
+
+            $poster_small = UploadedFile::getInstance($model, 'poster_small');
+            $poster_big = UploadedFile::getInstance($model, 'poster_big');
+
             $unique_id = uniqid(time());
 
-            // loading to the temporary folder
-            $poster_small = UploadedFile::getInstance($model, 'poster_small');
             if (!empty($poster_small)) {
+                self::removeFile($poster_small_before_update);
                 $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
             } else {
-                $model->poster_small = $small_poster_before_update;
+                $model->poster_small = $poster_small_before_update;
             }
 
-            // loading to the temporary folder
-            $poster_big = UploadedFile::getInstance($model, 'poster_big');
             if (!empty($poster_big)) {
+                self::removeFile($poster_big_before_update);
                 $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
             } else {
-                $model->poster_big = $big_poster_before_update;
+                $model->poster_big = $poster_big_before_update;
             }
 
-            if ($model->save()) {
+            if ($model->validate()) {
+
                 if (!empty($poster_small)) {
-                    Movies::removeFile(Yii::getAlias('@poster_small') . $small_poster_before_update); // deleting old
+                    $poster_small->saveAs($model->poster_small);
                 }
 
-                if (!empty($poster_big)) {
-                    Movies::removeFile(Yii::getAlias('@poster_big') . $big_poster_before_update); // deleting old
-                }
-
-                try {
-                    $image = new SimpleImage();
-
-                    // saving poster_small
-                    if (!empty($poster_small)) {
-                        $image
-                            ->fromFile($poster_small->tempName)
-                            ->thumbnail(Yii::$app->params['poster_small_width'], Yii::$app->params['poster_small_height'], Yii::$app->params['poster_small_anchor'])
-                            ->toFile(Yii::getAlias('@poster_small') . $model->poster_small, 'image/jpeg');
-                    }
-
-                    // saving poster_big
                     if (!empty($poster_big)) {
-                        $image
-                            ->fromFile($poster_big->tempName)
-                            ->thumbnail(Yii::$app->params['poster_big_width'], Yii::$app->params['poster_big_height'], Yii::$app->params['poster_big_anchor'])
-                            ->blur(Yii::$app->params['poster_big_blur_filter'], Yii::$app->params['poster_big_blur_filter_passes'])
-                            ->darken(Yii::$app->params['poster_big_blur_filter_darken'])
-                            ->toFile(Yii::getAlias('@poster_big') . $model->poster_big, 'image/jpeg');
-                    }
-                } catch (Exception $err) {
-                    echo $err->getMessage();
+                    $poster_big->saveAs($model->poster_big);
                 }
-            }
 
-            return $this->redirect(['view', 'id' => $model->id]);
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
-            return $this->render('update', [
+            return $this->render('create', [
                 'model' => $model,
             ]);
         }
@@ -195,17 +172,12 @@ class MoviesController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+        $record = $this->findModel($id);
 
-        if (!empty($model->poster_small)) {
-            Movies::removeFile(Yii::getAlias('@poster_small') . $model->poster_small);
-        }
+        self::removeFile($record->poster_small);
+        self::removeFile($record->poster_big);
 
-        if (!empty($model->poster_big)) {
-            Movies::removeFile(Yii::getAlias('@poster_big') . $model->poster_big);
-        }
-
-        $model->delete();
+        $record->delete();
 
         return $this->redirect(['index']);
     }
@@ -224,5 +196,10 @@ class MoviesController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public static function removeFile($file)
+    {
+        return @unlink($file);
     }
 }
