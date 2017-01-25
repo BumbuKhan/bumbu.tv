@@ -131,11 +131,19 @@ class MoviesController extends Controller
 
             // loading to the temporary folder
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
-            $poster_big = UploadedFile::getInstance($model, 'poster_big');
+            if (!empty($poster_small)) {
+                $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
+            } else {
+                $model->poster_small = $small_poster_before_update;
+            }
 
-            // picking up file name
-            $model->poster_small = 'ps_' . $unique_id . '.' . $poster_small->extension;
-            $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
+            // loading to the temporary folder
+            $poster_big = UploadedFile::getInstance($model, 'poster_big');
+            if (!empty($poster_big)) {
+                $model->poster_big = 'pb_' . $unique_id . '.' . $poster_big->extension;
+            } else {
+                $model->poster_big = $big_poster_before_update;
+            }
 
             if ($model->save()) {
                 if (!empty($poster_small)) {
