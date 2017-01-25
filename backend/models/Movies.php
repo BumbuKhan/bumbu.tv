@@ -28,9 +28,17 @@ class Movies extends \yii\db\ActiveRecord
     {
         $scenarios = [];
         $scenarios['default'] = ['type'];
+
         $scenarios['movie_create'] = ['type', 'title', 'description', 'poster_small', 'poster_big'];
         $scenarios['movie_update'] = ['type', 'title', 'description', 'poster_small', 'poster_big'];
-        $scenarios['series_episode'] = ['type', 'title', 'description'];
+
+        $scenarios['series_create'] = ['type', 'title', 'description', 'poster_small', 'poster_big'];
+        $scenarios['series_update'] = ['type', 'title', 'description', 'poster_small', 'poster_big'];
+
+        $scenarios['series_episode_create'] = ['type', 'title', 'description'];
+        $scenarios['series_episode_update'] = ['type', 'title', 'description'];
+
+        $scenarios['ted_create'] = ['type', 'title', 'description'];
         return $scenarios;
     }
 

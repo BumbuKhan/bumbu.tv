@@ -109,8 +109,13 @@ class MoviesController extends Controller
 
             if ($model->validate()) {
 
-                $poster_small->saveAs($model->poster_small);
-                $poster_big->saveAs($model->poster_big);
+                if (!empty($poster_small)) {
+                    $poster_small->saveAs($model->poster_small);
+                }
+
+                if (!empty($poster_big)) {
+                    $poster_big->saveAs($model->poster_big);
+                }
 
                 if ($model->save()) {
                     return $this->redirect(['view', 'id' => $model->id]);
@@ -137,10 +142,35 @@ class MoviesController extends Controller
     {
         $model = $this->findModel($id);
 
-        $model->scenario = 'movie_update';
-
         $poster_small_before_update = $model->poster_small;
         $poster_big_before_update = $model->poster_big;
+
+        $request = Yii::$app->request;
+        $post = $request->post();
+
+        if ($request->isPost) {
+            $type = $post['Movies']['type'];
+
+            switch ($type) {
+                case 'movie':
+                    $model->scenario = 'movie_update';
+                    break;
+                case 'series':
+                    $model->scenario = 'series_update';
+                    break;
+                case 'series_episode':
+                    $model->scenario = 'series_update_create';
+                    break;
+                case 'ted':
+                    $model->scenario = 'ted_update';
+                    break;
+                case 'cartoon':
+                    $model->scenario = 'cartoon_update';
+                    break;
+                default:
+                    $model->scenario = 'default';
+            }
+        }
 
         if ($model->load(Yii::$app->request->post())) {
 
