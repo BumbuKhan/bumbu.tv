@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
         'enableClientScript' => false
     ]); ?>
 
-    <?= $form->field($model, 'type')->dropDownList([ 'movie' => 'Movie', 'series' => 'Series', 'series_episode' => 'Series episode', 'ted' => 'Ted', 'cartoon' => 'Cartoon', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'type')->dropDownList([ 'movie' => 'Movie', 'series' => 'Series', 'series_episode' => 'Series episode', 'ted' => 'Ted', 'cartoon' => 'Cartoon', ], ['prompt' => 'Choose type']) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 

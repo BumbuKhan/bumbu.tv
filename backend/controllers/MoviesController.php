@@ -65,10 +65,34 @@ class MoviesController extends Controller
     public function actionCreate()
     {
         $model = new Movies();
+        $request = Yii::$app->request;
+        $post = $request->post();
 
-        $model->scenario = 'movie_create';
+        if ($request->isPost) {
+            $type = $post['Movies']['type'];
 
-        if ($model->load(Yii::$app->request->post())) {
+            switch ($type) {
+                case 'movie':
+                    $model->scenario = 'movie_create';
+                    break;
+                case 'series':
+                    $model->scenario = 'series_create';
+                    break;
+                case 'series_episode':
+                    $model->scenario = 'series_episode_create';
+                    break;
+                case 'ted':
+                    $model->scenario = 'ted_create';
+                    break;
+                case 'cartoon':
+                    $model->scenario = 'cartoon_create';
+                    break;
+                default:
+                    $model->scenario = 'default';
+            }
+        }
+
+        if ($model->load($post)) {
 
             $poster_small = UploadedFile::getInstance($model, 'poster_small');
             $poster_big = UploadedFile::getInstance($model, 'poster_big');
@@ -145,7 +169,7 @@ class MoviesController extends Controller
                     $poster_small->saveAs($model->poster_small);
                 }
 
-                    if (!empty($poster_big)) {
+                if (!empty($poster_big)) {
                     $poster_big->saveAs($model->poster_big);
                 }
 
