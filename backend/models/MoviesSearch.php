@@ -18,8 +18,8 @@ class MoviesSearch extends Movies
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['type', 'title', 'description', 'poster_small', 'poster_big'], 'safe'],
+            [['id', 'duration'], 'integer'],
+            [['type', 'title', 'description', 'poster_small', 'poster_big', 'src', 'trailer'], 'safe'],
         ];
     }
 
@@ -60,13 +60,16 @@ class MoviesSearch extends Movies
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'duration' => $this->duration,
         ]);
 
         $query->andFilterWhere(['like', 'type', $this->type])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'poster_small', $this->poster_small])
-            ->andFilterWhere(['like', 'poster_big', $this->poster_big]);
+            ->andFilterWhere(['like', 'poster_big', $this->poster_big])
+            ->andFilterWhere(['like', 'src', $this->src])
+            ->andFilterWhere(['like', 'trailer', $this->trailer]);
 
         return $dataProvider;
     }

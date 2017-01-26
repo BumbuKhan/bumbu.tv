@@ -6,9 +6,9 @@ return [
         '@poster_small' => '@uploads/movies/posters/small/',    /* Movie's small poster */
         '@poster_big' => '@uploads/movies/posters/big/',        /* Movie's big poster */
 
-        '@shot_thumb' => '@uploads/movies/gallery/thumb/',        /* Movie's photo gallery */
-        '@shot_big' => '@uploads/movies/gallery/big/',            /* Movie's photo gallery */
-        '@shot_original' => '@uploads/movies/gallery/original/',  /* Movie's photo gallery */
+        '@gallery_thumb' => '@uploads/movies/gallery/thumb/',        /* Movie's photo gallery */
+        '@gallery_big' => '@uploads/movies/gallery/big/',            /* Movie's photo gallery */
+        '@gallery_original' => '@uploads/movies/gallery/original/',  /* Movie's photo gallery */
 
         '@subtitles' => '@uploads/movies/subtitles/',           /* Subtitles for movie */
         '@episodes' => '@uploads/movies/episodes/',             /* Episodes for series */
