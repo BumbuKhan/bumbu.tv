@@ -55,6 +55,8 @@ class Movies extends \yii\db\ActiveRecord
             'trailer',
             'subtitle',
             'issue_date',
+            'is_blocked',
+            'is_deleted'
         ];
         $scenarios['series_create'] = $scenarios['series_update'] = [
             'type',
@@ -67,6 +69,8 @@ class Movies extends \yii\db\ActiveRecord
             'series_poster_right',
             'series_poster_gradient_start',
             'series_poster_gradient_end',
+            'is_blocked',
+            'is_deleted'
         ];
         $scenarios['series_episode_create'] = $scenarios['series_episode_update'] = [
             'type',
@@ -77,6 +81,8 @@ class Movies extends \yii\db\ActiveRecord
             'subtitle',
             'series_episode_shot',
             'issue_date',
+            'is_blocked',
+            'is_deleted'
         ];
         $scenarios['ted_create'] = $scenarios['ted_update'] = [
             'type',
@@ -88,6 +94,8 @@ class Movies extends \yii\db\ActiveRecord
             'ted_original',
             'subtitle',
             'issue_date',
+            'is_blocked',
+            'is_deleted'
         ];
         $scenarios['cartoon_create'] = $scenarios['cartoon_update'] = [
             'type',
@@ -100,6 +108,8 @@ class Movies extends \yii\db\ActiveRecord
             'trailer',
             'subtitle',
             'issue_date',
+            'is_blocked',
+            'is_deleted'
         ];
 
         return $scenarios;

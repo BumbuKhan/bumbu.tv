@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use dosamigos\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Movies */
@@ -35,6 +36,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'subtitle')->fileInput() ?>
 
     <?= $form->field($model, 'series_episode_shot')->fileInput() ?>
+    <?= $form->field($model, 'series_episode_shot')->fileInput() ?>
 
     <?= $form->field($model, 'series_poster_left')->fileInput() ?>
 
@@ -44,11 +46,31 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'series_poster_gradient_end')->textInput() ?>
 
-    <?= $form->field($model, 'issue_date')->textInput() ?>
+    <?= $form->field($model, 'issue_date')->widget(
+        DatePicker::className(), [
+        'clientOptions' => [
+            'autoclose' => true,
+            'format' => 'yyyy-mm-dd'
+        ]
+    ]); ?>
 
-    <?= $form->field($model, 'is_blocked')->dropDownList(['0' => 'No', '1' => 'Yes'], ['prompt' => '']) ?>
+    <?= $form->field($model, 'is_blocked')->dropDownList([
+        '0' => 'No',
+        '1' => 'Yes'
+    ],
+        ['options' =>
+            ['1' => ['Selected'=>true]]
+        ]
+    ) ?>
 
-    <?= $form->field($model, 'is_deleted')->dropDownList(['0' => 'No', '1' => 'Yes'], ['prompt' => '']) ?>
+    <?= $form->field($model, 'is_deleted')->dropDownList([
+        '0' => 'No',
+        '1' => 'Yes'
+    ],
+        ['options' =>
+            ['0' => ['Selected'=>true]]
+        ]
+    ) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
