@@ -47,4 +47,16 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
             'episode_id' => 'Episode ID',
         ];
     }
+
+    public function getMovie()
+    {
+        return $this->hasOne(Movies::className(), ['id' => 'movie_id']);
+    }
+
+    public function getMovieName()
+    {
+        $movie = $this->getMovie();
+
+        return $movie ? $movie->title : '';
+    }
 }
