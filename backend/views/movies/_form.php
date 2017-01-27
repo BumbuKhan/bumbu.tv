@@ -37,6 +37,7 @@ use kartik\color\ColorInput;
     <?= $form->field($model, 'subtitle')->fileInput() ?>
 
     <?= $form->field($model, 'series_episode_shot')->fileInput() ?>
+
     <?= $form->field($model, 'series_episode_shot')->fileInput() ?>
 
     <?= $form->field($model, 'series_poster_left')->fileInput() ?>
