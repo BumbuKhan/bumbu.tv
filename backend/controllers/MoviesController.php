@@ -249,7 +249,7 @@ class MoviesController extends Controller
 
                 $unique_id = uniqid(time());
 
-                if (!empty($model->poster_small)) {
+                if (!empty($model->poster_small) && is_a($model->poster_small, UploadedFile::className())) {
                     $file_name = 'ps_' . $unique_id . '.' . $model->poster_small->extension;
                     self::removeFile(Yii::getAlias('@poster_small') . $poster_small_before_update);
                     $model->poster_small->saveAs(Yii::getAlias('@poster_small') . $file_name);
@@ -258,7 +258,7 @@ class MoviesController extends Controller
                     $model->poster_small = $poster_small_before_update;
                 }
 
-                if (!empty($model->poster_big)) {
+                if (!empty($model->poster_big) && is_a($model->poster_big, UploadedFile::className())) {
                     $file_name = 'pb_' . $unique_id . '.' . $model->poster_big->extension;
                     self::removeFile(Yii::getAlias('@poster_big') . $poster_big_before_update);
                     $model->poster_big->saveAs(Yii::getAlias('@poster_big') . $file_name);
@@ -267,7 +267,7 @@ class MoviesController extends Controller
                     $model->poster_big = $poster_big_before_update;
                 }
 
-                if (!empty($model->subtitle)) {
+                if (!empty($model->subtitle) && is_a($model->subtitle, UploadedFile::className())) {
                     $file_name = 'st_' . $unique_id . '.' . $model->subtitle->extension;
                     self::removeFile(Yii::getAlias('@subtitles') . $subtitle_before_update);
                     $model->subtitle->saveAs(Yii::getAlias('@subtitles') . $file_name);
@@ -276,7 +276,7 @@ class MoviesController extends Controller
                     $model->subtitle = $subtitle_before_update;
                 }
 
-                if (!empty($model->series_episode_shot)) {
+                if (!empty($model->series_episode_shot) && is_a($model->series_episode_shot, UploadedFile::className())) {
                     $file_name = 'ep_' . $unique_id . '.' . $model->series_episode_shot->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
                     $model->series_episode_shot->saveAs(Yii::getAlias('@episodes') . $file_name);
@@ -285,7 +285,7 @@ class MoviesController extends Controller
                     $model->series_episode_shot = $series_episode_shot_before_update;
                 }
 
-                if (!empty($model->series_poster_left)) {
+                if (!empty($model->series_poster_left) && is_a($model->series_poster_left, UploadedFile::className())) {
                     $file_name = 'spl_' . $unique_id . '.' . $model->series_poster_left->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
                     $model->series_poster_left->saveAs(Yii::getAlias('@episodes') . $file_name);
@@ -294,7 +294,7 @@ class MoviesController extends Controller
                     $model->series_poster_left = $series_poster_left_before_update;
                 }
 
-                if (!empty($model->series_poster_right)) {
+                if (!empty($model->series_poster_right) && is_a($model->series_poster_right, UploadedFile::className())) {
                     $file_name = 'spr_' . $unique_id . '.' . $model->series_poster_right->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
                     $model->series_poster_right->saveAs(Yii::getAlias('@episodes') . $file_name);

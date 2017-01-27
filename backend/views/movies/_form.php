@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
+use kartik\color\ColorInput;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Movies */
@@ -42,9 +43,15 @@ use dosamigos\datepicker\DatePicker;
 
     <?= $form->field($model, 'series_poster_right')->fileInput() ?>
 
-    <?= $form->field($model, 'series_poster_gradient_start')->textInput() ?>
+    <?= $form->field($model, 'series_poster_gradient_start')->widget(
+        ColorInput::classname(), [
+        'options' => ['placeholder' => 'Select color ...'],
+    ]) ?>
 
-    <?= $form->field($model, 'series_poster_gradient_end')->textInput() ?>
+    <?= $form->field($model, 'series_poster_gradient_end')->widget(
+        ColorInput::classname(), [
+        'options' => ['placeholder' => 'Select color ...'],
+    ]) ?>
 
     <?= $form->field($model, 'issue_date')->widget(
         DatePicker::className(), [
@@ -59,7 +66,7 @@ use dosamigos\datepicker\DatePicker;
         '1' => 'Yes'
     ],
         ['options' =>
-            ['1' => ['Selected'=>true]]
+            ['1' => ['Selected' => true]]
         ]
     ) ?>
 
@@ -68,7 +75,7 @@ use dosamigos\datepicker\DatePicker;
         '1' => 'Yes'
     ],
         ['options' =>
-            ['0' => ['Selected'=>true]]
+            ['0' => ['Selected' => true]]
         ]
     ) ?>
 
