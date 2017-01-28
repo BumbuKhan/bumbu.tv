@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 use kartik\color\ColorInput;
@@ -17,6 +18,17 @@ use kartik\color\ColorInput;
     ]); ?>
 
     <?= $form->field($model, 'type')->dropDownList(Yii::$app->params['movie_types'], ['prompt' => 'Choose type']) ?>
+
+    <?php if (Yii::$app->controller->action->id == 'create') { ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">Bind episode to series</div>
+            <div class="panel-body">
+                <?= $form->field($series_model, 'movie_id')->dropDownList(ArrayHelper::map($series, 'id', 'title'), ['prompt' => 'Choose series']) ?>
+                <?= $form->field($series_model, 'season')->textInput() ?>
+                <?= $form->field($series_model, 'episode')->textInput() ?>
+            </div>
+        </div>
+    <?php } ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 

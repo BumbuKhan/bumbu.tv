@@ -6,6 +6,7 @@ use Yii;
 use backend\models\Movies;
 use backend\models\MoviesSearch;
 use backend\models\MoviesDP;
+use backend\models\SeriesEpisodeRel;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -66,6 +67,8 @@ class MoviesController extends Controller
     public function actionCreate()
     {
         $model = new Movies();
+        $series_model = new SeriesEpisodeRel();
+
         $request = Yii::$app->request;
         $post = $request->post();
 
@@ -93,7 +96,7 @@ class MoviesController extends Controller
             }
         }
 
-        if ($model->load($post)) {
+        if ($model->load($post) && $series_model->load($post)) {
 
             if (in_array('poster_small', $model->scenarios()[$model->scenario])) {
                 $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
@@ -120,6 +123,17 @@ class MoviesController extends Controller
             }
 
             if ($model->validate()) {
+
+                // if current scenario euquals to 'series_episode_create' then we should save episode-series bind also
+                if ($model->scenario == 'series_episode_create') {
+                    if (!$series_model->validate()) {
+                        return $this->render('create', [
+                            'model' => $model,
+                            'series_model' => $series_model,
+                            'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
+                        ]);
+                    }
+                }
 
                 $unique_id = uniqid(time());
 
@@ -162,17 +176,26 @@ class MoviesController extends Controller
                 $model->add_datetime = date('Y-m-d H:i:s', time());
 
                 if ($model->save(false)) {
+                    if ($model->scenario == 'series_episode_create') {
+                        $series_model->episode_id = $model->id;
+                        $series_model->save();
+                    }
+
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             } else {
                 return $this->render('create', [
                     'model' => $model,
+                    'series_model' => $series_model,
+                    'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
                 ]);
             }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'series_model' => $series_model,
+            'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
         ]);
     }
 

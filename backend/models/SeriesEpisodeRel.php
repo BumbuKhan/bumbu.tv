@@ -32,10 +32,10 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['movie_id', 'season', 'episode', 'episode_id'], 'required'],
-            [['movie_id', 'season', 'episode', 'episode_id'], 'integer'],
+            [['movie_id', 'season', 'episode'], 'required'],
+            [['movie_id', 'season', 'episode'], 'integer'],
             [['movie_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::className(), 'targetAttribute' => ['movie_id' => 'id']],
-            [['episode_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::className(), 'targetAttribute' => ['episode_id' => 'id']],
+            //[['episode_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::className(), 'targetAttribute' => ['episode_id' => 'id']],
         ];
     }
 
@@ -49,7 +49,6 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
             'movie_id' => 'Movie ID',
             'season' => 'Season',
             'episode' => 'Episode',
-            'episode_id' => 'Episode ID',
         ];
     }
 
