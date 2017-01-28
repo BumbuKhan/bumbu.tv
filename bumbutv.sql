@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 27 2017 г., 02:12
+-- Время создания: Янв 28 2017 г., 13:34
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `migration` (
 --
 
 CREATE TABLE IF NOT EXISTS `movies` (
-  `id` int(11) NOT NULL,
+  `id` int(11) unsigned NOT NULL,
   `type` enum('movie','series','series_episode','ted','cartoon') NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
@@ -59,6 +59,20 @@ CREATE TABLE IF NOT EXISTS `movies` (
   `view_amount` int(11) NOT NULL DEFAULT '0',
   `is_blocked` enum('0','1') NOT NULL DEFAULT '1',
   `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `series_episode_rel`
+--
+
+CREATE TABLE IF NOT EXISTS `series_episode_rel` (
+  `id` int(11) unsigned NOT NULL,
+  `movie_id` int(11) unsigned NOT NULL COMMENT 'ID of movie that episode belongs to',
+  `season` int(2) unsigned NOT NULL COMMENT 'Index number of season',
+  `episode` int(2) NOT NULL COMMENT 'Index number of episode',
+  `episode_id` int(11) unsigned NOT NULL COMMENT 'ID of movie(episode)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -93,7 +107,21 @@ ALTER TABLE `migration`
 -- Индексы таблицы `movies`
 --
 ALTER TABLE `movies`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_2` (`id`),
+  ADD KEY `id` (`id`),
+  ADD KEY `id_3` (`id`);
+
+--
+-- Индексы таблицы `series_episode_rel`
+--
+ALTER TABLE `series_episode_rel`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `movie_id_3` (`movie_id`,`episode_id`),
+  ADD KEY `movie_id` (`movie_id`,`episode_id`),
+  ADD KEY `movie_id_2` (`movie_id`),
+  ADD KEY `episode_id` (`episode_id`);
 
 --
 -- Индексы таблицы `user`
@@ -112,12 +140,28 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для таблицы `movies`
 --
 ALTER TABLE `movies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `series_episode_rel`
+--
+ALTER TABLE `series_episode_rel`
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `series_episode_rel`
+--
+ALTER TABLE `series_episode_rel`
+  ADD CONSTRAINT `series_episode_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`),
+  ADD CONSTRAINT `series_episode_rel_ibfk_2` FOREIGN KEY (`episode_id`) REFERENCES `movies` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

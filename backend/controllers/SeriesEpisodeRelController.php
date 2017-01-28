@@ -2,11 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\Movies;
+use backend\models\MoviesDP;
 use Yii;
 use backend\models\SeriesEpisodeRel;
 use backend\models\SeriesEpisodeRelSearch;
-use backend\models\Movies;
-use yii\base\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -67,8 +67,8 @@ class SeriesEpisodeRelController extends Controller
     {
         $model = new SeriesEpisodeRel();
 
-        $series = Movies::find()->select(['id', 'title'])->where(['type' => 'series'])->asArray()->all();
-        $episodes = Movies::find()->select(['id', 'title'])->where(['type' => 'series_episode'])->asArray()->all();
+        $series = MoviesDP::getMovies(['id', 'title'], ['type' => 'series']);
+        $episodes = MoviesDP::getNotBindedSeriesEpisodes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -76,7 +76,7 @@ class SeriesEpisodeRelController extends Controller
             return $this->render('create', [
                 'model' => $model,
                 'series' => $series,
-                'episodes' => $episodes
+                'episodes' => $episodes,
             ]);
         }
     }
@@ -91,8 +91,8 @@ class SeriesEpisodeRelController extends Controller
     {
         $model = $this->findModel($id);
 
-        $series = Movies::find()->select(['id', 'title'])->where(['type' => 'series'])->asArray()->all();
-        $episodes = Movies::find()->select(['id', 'title'])->where(['type' => 'series_episode'])->asArray()->all();
+        $series = MoviesDP::getMovies(['id', 'title'], ['type' => 'series']);
+        $episodes = MoviesDP::getNotBindedSeriesEpisodes($model->episode_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -100,7 +100,7 @@ class SeriesEpisodeRelController extends Controller
             return $this->render('update', [
                 'model' => $model,
                 'series' => $series,
-                'episodes' => $episodes
+                'episodes' => $episodes,
             ]);
         }
     }

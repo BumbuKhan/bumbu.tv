@@ -12,6 +12,9 @@ use Yii;
  * @property string $season
  * @property integer $episode
  * @property string $episode_id
+ *
+ * @property Movies $movie
+ * @property Movies $episode0
  */
 class SeriesEpisodeRel extends \yii\db\ActiveRecord
 {
@@ -31,6 +34,8 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
         return [
             [['movie_id', 'season', 'episode', 'episode_id'], 'required'],
             [['movie_id', 'season', 'episode', 'episode_id'], 'integer'],
+            [['movie_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::className(), 'targetAttribute' => ['movie_id' => 'id']],
+            [['episode_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::className(), 'targetAttribute' => ['episode_id' => 'id']],
         ];
     }
 
@@ -48,15 +53,19 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getMovie()
     {
         return $this->hasOne(Movies::className(), ['id' => 'movie_id']);
     }
 
-    public function getMovieName()
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEpisode0()
     {
-        $movie = $this->getMovie();
-
-        return $movie ? $movie->title : '';
+        return $this->hasOne(Movies::className(), ['id' => 'episode_id']);
     }
 }
