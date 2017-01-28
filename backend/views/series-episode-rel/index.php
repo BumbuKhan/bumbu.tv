@@ -15,29 +15,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <!--<p>
-        <?/*= Html::a('Create Series Episode Rel', ['create'], ['class' => 'btn btn-success']) */?>
-    </p>-->
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+    <div class="table-responsive">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
 
-            [
-                'attribute' => 'movie_id',
-                'value' => 'movie.title'
+                [
+                    'attribute' => 'movie_id',
+                    'value' => 'movie.title'
+                ],
+                'season',
+                'episode',
+                [
+                    'attribute' => 'episode_id',
+                    'value' => 'episode0.title'
+
+                ],
+
+                ['class' => 'yii\grid\ActionColumn'],
             ],
-            'season',
-            'episode',
-            [
-                'attribute' => 'episode_id',
-                'value' => 'episode0.title'
-
-            ],
-//            'episode_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+        ]); ?>
+    </div>
 </div>
