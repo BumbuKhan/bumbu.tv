@@ -373,10 +373,15 @@ class MoviesController extends SiteController
             }
 
             // deleting episodes from relation table
-            \backend\models\SeriesEpisodeRel::deleteAll(['movie_id' => $record->id]);
+            SeriesEpisodeRel::deleteAll(['movie_id' => $record->id]);
 
             // deleting episodes from main 'movie table'
             Movies::deleteAll(['id' => $episode_ids]);
+        }
+
+        // if type of the removing movie is 'episode' then we should remove record from series_episode_rel table also
+        if ($record->type == 'episode') {
+            SeriesEpisodeRel::find()->where(['episode_id' => $record->id])->one()->delete();
         }
 
         self::removeFile(Yii::getAlias('@poster_small') . $record->poster_small);
