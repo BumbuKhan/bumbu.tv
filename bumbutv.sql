@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 28 2017 г., 15:31
+-- Время создания: Янв 29 2017 г., 02:15
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -23,23 +23,12 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `migration`
---
-
-CREATE TABLE IF NOT EXISTS `migration` (
-  `version` varchar(180) NOT NULL,
-  `apply_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `movies`
 --
 
 CREATE TABLE IF NOT EXISTS `movies` (
   `id` int(11) unsigned NOT NULL,
-  `type` enum('movie','series','series_episode','ted','cartoon') NOT NULL,
+  `type` enum('movie','series','episode','ted','cartoon') NOT NULL,
   `title` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `poster_small` varchar(40) NOT NULL,
@@ -96,12 +85,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 -- Индексы сохранённых таблиц
 --
-
---
--- Индексы таблицы `migration`
---
-ALTER TABLE `migration`
-  ADD PRIMARY KEY (`version`);
 
 --
 -- Индексы таблицы `movies`
