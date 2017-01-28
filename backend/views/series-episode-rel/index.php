@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\SeriesEpisodeRelSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Series Episode Rels';
+$this->title = 'Series Episode Relations';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="series-episode-rel-index">
@@ -15,9 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Series Episode Rel', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <!--<p>
+        <?/*= Html::a('Create Series Episode Rel', ['create'], ['class' => 'btn btn-success']) */?>
+    </p>-->
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
