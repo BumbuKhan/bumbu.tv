@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\Movies;
 use backend\models\MoviesSearch;
+use backend\models\MoviesDP;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -328,12 +329,38 @@ class MoviesController extends Controller
     {
         $record = $this->findModel($id);
 
+        // if type of the removing movie is 'series' then we should remove all episodes stuff binded to it as well
+        if ($record->type == 'series') {
+
+            // getting all episodes binded to current series
+            $episodes = MoviesDP::getSeriesEpisodes($record->id, ['id', 'subtitle', 'series_episode_shot']);
+
+            $episode_ids = [];
+
+            // deleting media files fro episodes
+            if (!empty($episodes)) {
+                foreach ($episodes as $episode) {
+                    self::removeFile(Yii::getAlias('@subtitles') . $episode['subtitle']);
+                    self::removeFile(Yii::getAlias('@episodes') . $episode['series_episode_shot']);
+
+                    $episode_ids[] = $episode['id'];
+                }
+            }
+
+            // deleting episodes from relation table
+            \backend\models\SeriesEpisodeRel::deleteAll(['movie_id' => $record->id]);
+
+            // deleting episodes from main 'movie table'
+            Movies::deleteAll(['id' => $episode_ids]);
+        }
+
         self::removeFile(Yii::getAlias('@poster_small') . $record->poster_small);
         self::removeFile(Yii::getAlias('@poster_big') . $record->poster_big);
         self::removeFile(Yii::getAlias('@subtitles') . $record->subtitle);
         self::removeFile(Yii::getAlias('@episodes') . $record->series_episode_shot);
         self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_left);
         self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_right);
+
 
         $record->delete();
 

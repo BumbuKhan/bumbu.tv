@@ -38,4 +38,20 @@ class MoviesDP extends Model
 
         return Yii::$app->db->createCommand($sql)->queryAll();
     }
+
+    /**
+     * @param $series_id
+     * @param $fields
+     * @return array
+     */
+    public static function getSeriesEpisodes($series_id, $fields)
+    {
+        $sql = "SELECT m1." . implode(', m1.', $fields) . "
+            FROM movies m
+                LEFT JOIN series_episode_rel s ON m.id = s.movie_id
+                LEFT JOIN movies m1 ON s.episode_id = m1.id
+            WHERE m.id = :series_id";
+
+        return Yii::$app->db->createCommand($sql, [':series_id' => $series_id])->queryAll();
+    }
 }
