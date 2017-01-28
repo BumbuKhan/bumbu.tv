@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 28 2017 г., 13:34
+-- Время создания: Янв 28 2017 г., 15:31
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -151,17 +151,6 @@ ALTER TABLE `series_episode_rel`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- Ограничения внешнего ключа сохраненных таблиц
---
-
---
--- Ограничения внешнего ключа таблицы `series_episode_rel`
---
-ALTER TABLE `series_episode_rel`
-  ADD CONSTRAINT `series_episode_rel_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`),
-  ADD CONSTRAINT `series_episode_rel_ibfk_2` FOREIGN KEY (`episode_id`) REFERENCES `movies` (`id`);
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
