@@ -1,6 +1,7 @@
 <?php
 return [
     'adminEmail' => 'admin@example.com',
+    'movie_types' => ['movie' => 'Movies', 'series' => 'Series', 'episode' => 'Series episode', 'ted' => 'TED'],
 
     // params for movie's mediafiles
     'poster_small_width' => 200,

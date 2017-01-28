@@ -31,7 +31,7 @@ class MoviesDP extends Model
         $sql = "SELECT m.id, m.title
             FROM movies m
                 LEFT JOIN series_episode_rel s ON m.id = s.episode_id
-            WHERE m.type = 'series_episode' 
+            WHERE m.type = 'episode' 
                 AND (s.id IS NULL) " .
             (!empty($include_id) ? "OR m.id = $include_id " : "") .
             "ORDER BY title";

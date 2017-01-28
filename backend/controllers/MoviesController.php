@@ -79,7 +79,7 @@ class MoviesController extends Controller
                 case 'series':
                     $model->scenario = 'series_create';
                     break;
-                case 'series_episode':
+                case 'episode':
                     $model->scenario = 'series_episode_create';
                     break;
                 case 'ted':
@@ -206,7 +206,7 @@ class MoviesController extends Controller
                 case 'series':
                     $model->scenario = 'series_update';
                     break;
-                case 'series_episode':
+                case 'episode':
                     $model->scenario = 'series_episode_update';
                     break;
                 case 'ted':

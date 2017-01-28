@@ -16,7 +16,7 @@ use kartik\color\ColorInput;
         'enableClientScript' => false
     ]); ?>
 
-    <?= $form->field($model, 'type')->dropDownList(['movie' => 'Movie', 'series' => 'Series', 'series_episode' => 'Series episode', 'ted' => 'Ted', 'cartoon' => 'Cartoon',], ['prompt' => 'Choose type']) ?>
+    <?= $form->field($model, 'type')->dropDownList(Yii::$app->params['movie_types'], ['prompt' => 'Choose type']) ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 

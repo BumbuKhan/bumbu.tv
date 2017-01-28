@@ -123,7 +123,7 @@ class Movies extends \yii\db\ActiveRecord
         return [
             [['type', 'title', 'description', 'duration', 'src', 'trailer', 'ted_original', 'series_poster_gradient_start', 'series_poster_gradient_end', 'issue_date'], 'required'],
             [['type', 'description', 'src', 'trailer', 'ted_original'], 'string'],
-            [['title'], 'string', 'max' => 20],
+            [['title'], 'string', 'max' => 50],
             [['series_poster_gradient_start', 'series_poster_gradient_end'], 'string'],
             [['poster_small', 'poster_big', 'series_episode_shot', 'series_poster_left', 'series_poster_right'], 'image', 'extensions' => ['jpg', 'jpeg']],
             [['subtitle'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => ['vtt', 'srt']],

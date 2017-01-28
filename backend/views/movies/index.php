@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Movies', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -25,11 +26,21 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'type',
+            [
+                'attribute' => 'type',
+                'filter' => Yii::$app->params['movie_types'],
+                'content' => function ($data) {
+                    return Yii::$app->params['movie_types'][$data->type];
+                }
+            ],
             'title',
-            'description:ntext',
-            'poster_small',
-            // 'poster_big',
+            [
+                'attribute' => 'add_datetime',
+                'label' => 'Added date',
+                'content' => function ($data) {
+                    return date('d M Y h:i', strtotime($data->add_datetime));
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
