@@ -24,10 +24,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'movie_id',
+            [
+                'attribute' => 'movie_id',
+                'value' => 'movie.title'
+            ],
             'season',
             'episode',
-            'episode_id',
+            [
+                'attribute' => 'episode_id',
+                'value' => 'episode0.title'
+
+            ],
+//            'episode_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

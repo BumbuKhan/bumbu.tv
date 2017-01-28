@@ -18,7 +18,8 @@ class SeriesEpisodeRelSearch extends SeriesEpisodeRel
     public function rules()
     {
         return [
-            [['id', 'movie_id', 'season', 'episode', 'episode_id'], 'integer'],
+            [['id', 'season', 'episode'], 'integer'],
+            [['movie_id', 'episode_id'], 'safe']
         ];
     }
 
@@ -50,20 +51,22 @@ class SeriesEpisodeRelSearch extends SeriesEpisodeRel
 
         $this->load($params);
 
+        $query->joinWith('movie');
+        $query->joinWith('episode0 m');
+
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'movie_id' => $this->movie_id,
             'season' => $this->season,
             'episode' => $this->episode,
-            'episode_id' => $this->episode_id,
-        ]);
+        ])
+            ->andFilterWhere(['like', 'movies.title', $this->movie_id])
+            ->andFilterWhere(['like', 'm.title', $this->episode_id])
+        ;
 
         return $dataProvider;
     }

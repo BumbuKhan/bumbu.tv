@@ -46,9 +46,10 @@ class SeriesEpisodeRel extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'movie_id' => 'Movie ID',
+            'movie_id' => 'Movie title',
             'season' => 'Season',
             'episode' => 'Episode',
+            'episode_id' => 'Episode title',
         ];
     }
 

@@ -63,7 +63,7 @@ class SeriesEpisodeRelController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    /*public function actionCreate()
     {
         $model = new SeriesEpisodeRel();
 
@@ -79,7 +79,7 @@ class SeriesEpisodeRelController extends Controller
                 'episodes' => $episodes,
             ]);
         }
-    }
+    }*/
 
     /**
      * Updates an existing SeriesEpisodeRel model.
