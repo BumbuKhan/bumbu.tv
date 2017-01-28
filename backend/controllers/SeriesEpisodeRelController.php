@@ -7,28 +7,30 @@ use backend\models\MoviesDP;
 use Yii;
 use backend\models\SeriesEpisodeRel;
 use backend\models\SeriesEpisodeRelSearch;
+use backend\controllers\SiteController;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * SeriesEpisodeRelController implements the CRUD actions for SeriesEpisodeRel model.
  */
-class SeriesEpisodeRelController extends Controller
+class SeriesEpisodeRelController extends SiteController
 {
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(), [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**
