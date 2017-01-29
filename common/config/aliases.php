@@ -13,6 +13,19 @@ return [
         '@subtitles' => '@uploads/movies/subtitles/',           /* Subtitles for movie */
         '@episodes' => '@uploads/movies/episodes/',             /* Episodes for series */
         '@src' => '@uploads/movies/src/',                       /* Movie itself */
+
+
+        // movie's stuff URLs
+        '@uploads_url' => '@frontend_url/uploads',
+        '@poster_small_url' => '@uploads_url/movies/posters/small/',
+        '@poster_big_url' => '@uploads_url/movies/posters/big/',
+
+        '@gallery_thumb_url' => '@uploads_url/movies/gallery/thumb/',
+        '@gallery_big_url' => '@uploads_url/movies/gallery/big/',
+
+        '@subtitles_url' => '@uploads_url/movies/subtitles/',
+        '@episodes_url' => '@uploads_url/movies/episodes/',
+        '@src_url' => '@uploads_url/movies/src/',
     ],
 ];
 
