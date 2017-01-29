@@ -351,12 +351,33 @@ class MoviesController extends SiteController
 
             if ($model->validate()) {
 
+                $image = new SimpleImage();
                 $unique_id = uniqid(time());
 
                 if (!empty($model->poster_small) && is_a($model->poster_small, UploadedFile::className())) {
                     $file_name = 'ps_' . $unique_id . '.' . $model->poster_small->extension;
                     self::removeFile(Yii::getAlias('@poster_small') . $poster_small_before_update);
-                    $model->poster_small->saveAs(Yii::getAlias('@poster_small') . $file_name);
+
+                    try {
+                        if ($model->scenario == 'ted_create') {
+                            $img_width = Yii::$app->params['poster_ted_width'];
+                            $img_height = Yii::$app->params['poster_ted_height'];
+                            $img_anchor = Yii::$app->params['poster_ted_anchor'];
+                        } else {
+                            $img_width = Yii::$app->params['poster_small_width'];
+                            $img_height = Yii::$app->params['poster_small_height'];
+                            $img_anchor = Yii::$app->params['poster_small_anchor'];
+                        }
+
+                        $image
+                            ->fromFile($model->poster_small->tempName)
+                            ->thumbnail($img_width, $img_height, $img_anchor)
+                            ->toFile(Yii::getAlias('@poster_small') . $file_name, 'image/jpeg');
+
+                    } catch (Exception $err) {
+                        echo $err->getMessage();
+                    }
+
                     $model->poster_small->name = $file_name;
                 } else {
                     $model->poster_small = $poster_small_before_update;
@@ -365,7 +386,21 @@ class MoviesController extends SiteController
                 if (!empty($model->poster_big) && is_a($model->poster_big, UploadedFile::className())) {
                     $file_name = 'pb_' . $unique_id . '.' . $model->poster_big->extension;
                     self::removeFile(Yii::getAlias('@poster_big') . $poster_big_before_update);
-                    $model->poster_big->saveAs(Yii::getAlias('@poster_big') . $file_name);
+
+                    try {
+                        $img_width = Yii::$app->params['poster_big_width'];
+                        $img_height = Yii::$app->params['poster_big_height'];
+                        $img_anchor = Yii::$app->params['poster_big_anchor'];
+
+                        $image
+                            ->fromFile($model->poster_big->tempName)
+                            ->thumbnail($img_width, $img_height, $img_anchor)
+                            ->toFile(Yii::getAlias('@poster_big') . $file_name, 'image/jpeg');
+
+                    } catch (Exception $err) {
+                        echo $err->getMessage();
+                    }
+
                     $model->poster_big->name = $file_name;
                 } else {
                     $model->poster_big = $poster_big_before_update;
@@ -383,7 +418,21 @@ class MoviesController extends SiteController
                 if (!empty($model->series_episode_shot) && is_a($model->series_episode_shot, UploadedFile::className())) {
                     $file_name = 'ep_' . $unique_id . '.' . $model->series_episode_shot->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
-                    $model->series_episode_shot->saveAs(Yii::getAlias('@episodes') . $file_name);
+
+                    try {
+                        $img_width = Yii::$app->params['series_episode_shot_width'];
+                        $img_height = Yii::$app->params['series_episode_shot_height'];
+                        $img_anchor = Yii::$app->params['series_episode_shot_anchor'];
+
+                        $image
+                            ->fromFile($model->series_episode_shot->tempName)
+                            ->thumbnail($img_width, $img_height, $img_anchor)
+                            ->toFile(Yii::getAlias('@episodes') . $file_name, 'image/jpeg');
+
+                    } catch (Exception $err) {
+                        echo $err->getMessage();
+                    }
+
                     $model->series_episode_shot->name = $file_name;
                 } else {
                     $model->series_episode_shot = $series_episode_shot_before_update;
@@ -392,7 +441,21 @@ class MoviesController extends SiteController
                 if (!empty($model->series_poster_left) && is_a($model->series_poster_left, UploadedFile::className())) {
                     $file_name = 'spl_' . $unique_id . '.' . $model->series_poster_left->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
-                    $model->series_poster_left->saveAs(Yii::getAlias('@episodes') . $file_name);
+
+                    try {
+                        $img_width = Yii::$app->params['poster_small_width'];
+                        $img_height = Yii::$app->params['poster_small_height'];
+                        $img_anchor = Yii::$app->params['poster_small_anchor'];
+
+                        $image
+                            ->fromFile($model->series_poster_left->tempName)
+                            ->thumbnail($img_width, $img_height, $img_anchor)
+                            ->toFile(Yii::getAlias('@poster_small') . $file_name, 'image/jpeg');
+
+                    } catch (Exception $err) {
+                        echo $err->getMessage();
+                    }
+
                     $model->series_poster_left->name = $file_name;
                 } else {
                     $model->series_poster_left = $series_poster_left_before_update;
@@ -401,7 +464,21 @@ class MoviesController extends SiteController
                 if (!empty($model->series_poster_right) && is_a($model->series_poster_right, UploadedFile::className())) {
                     $file_name = 'spr_' . $unique_id . '.' . $model->series_poster_right->extension;
                     self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
-                    $model->series_poster_right->saveAs(Yii::getAlias('@episodes') . $file_name);
+
+                    try {
+                        $img_width = Yii::$app->params['poster_small_width'];
+                        $img_height = Yii::$app->params['poster_small_height'];
+                        $img_anchor = Yii::$app->params['poster_small_anchor'];
+
+                        $image
+                            ->fromFile($model->series_poster_right->tempName)
+                            ->thumbnail($img_width, $img_height, $img_anchor)
+                            ->toFile(Yii::getAlias('@poster_small') . $file_name, 'image/jpeg');
+
+                    } catch (Exception $err) {
+                        echo $err->getMessage();
+                    }
+
                     $model->series_poster_right->name = $file_name;
                 } else {
                     $model->series_poster_right = $series_poster_left_before_update;
