@@ -14,4 +14,12 @@ return [
     'poster_big_blur_filter' => 'gaussian', /* 'selective', 'gaussian' (default 'gaussian'). */
     'poster_big_blur_filter_passes' => 35, /* The number of time to apply the filter, enhancing the effect (default 1). */
     'poster_big_blur_filter_darken' => 10,
+
+    'series_episode_shot_width' => 240,
+    'series_episode_shot_height' => 85,
+    'series_episode_shot_anchor' => 'center', /*  'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' (default 'center') */
+
+    'poster_ted_width' => 200,
+    'poster_ted_height' => 110,
+    'poster_ted_anchor' => 'center', /*  'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' (default 'center') */
 ];
