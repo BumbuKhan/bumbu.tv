@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 31 2017 г., 08:38
+-- Время создания: Фев 01 2017 г., 00:48
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -19,6 +19,17 @@ SET time_zone = "+00:00";
 --
 -- База данных: `bumbutv`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `countries`
+--
+
+CREATE TABLE IF NOT EXISTS `countries` (
+  `id` int(11) NOT NULL,
+  `title` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -98,6 +109,13 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 --
+-- Индексы таблицы `countries`
+--
+ALTER TABLE `countries`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `title` (`title`);
+
+--
 -- Индексы таблицы `genres`
 --
 ALTER TABLE `genres`
@@ -137,6 +155,11 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
+--
+-- AUTO_INCREMENT для таблицы `countries`
+--
+ALTER TABLE `countries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `genres`
 --

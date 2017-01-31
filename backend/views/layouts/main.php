@@ -41,6 +41,7 @@ AppAsset::register($this);
             ['label' => '<i class="fa fa-video-camera" aria-hidden="true"></i>&nbsp;&nbsp;Movies', 'url' => ['/movies/index']],
             ['label' => '<i class="fa fa-film" aria-hidden="true"></i>&nbsp;&nbsp;Series', 'url' => ['/series-episode-rel/index']],
             ['label' => '<i class="fa fa-diamond" aria-hidden="true"></i>&nbsp;&nbsp;Genres', 'url' => ['/genres/index']],
+            ['label' => '<i class="fa fa-globe" aria-hidden="true"></i>&nbsp;&nbsp;Countries', 'url' => ['/countries/index']],
         ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
