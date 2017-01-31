@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Фев 01 2017 г., 00:48
+-- Время создания: Фев 01 2017 г., 00:57
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -75,6 +75,30 @@ CREATE TABLE IF NOT EXISTS `movies` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `movies_country_rel`
+--
+
+CREATE TABLE IF NOT EXISTS `movies_country_rel` (
+  `id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `country_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `movies_genre_rel`
+--
+
+CREATE TABLE IF NOT EXISTS `movies_genre_rel` (
+  `id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `genre_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `series_episode_rel`
 --
 
@@ -132,6 +156,18 @@ ALTER TABLE `movies`
   ADD KEY `id_3` (`id`);
 
 --
+-- Индексы таблицы `movies_country_rel`
+--
+ALTER TABLE `movies_country_rel`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `movies_genre_rel`
+--
+ALTER TABLE `movies_genre_rel`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `series_episode_rel`
 --
 ALTER TABLE `series_episode_rel`
@@ -170,6 +206,16 @@ ALTER TABLE `genres`
 --
 ALTER TABLE `movies`
   MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `movies_country_rel`
+--
+ALTER TABLE `movies_country_rel`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `movies_genre_rel`
+--
+ALTER TABLE `movies_genre_rel`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `series_episode_rel`
 --
