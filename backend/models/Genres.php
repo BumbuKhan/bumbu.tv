@@ -28,6 +28,7 @@ class Genres extends \yii\db\ActiveRecord
         return [
             [['title'], 'required'],
             [['title'], 'string', 'max' => 40],
+            [['title'], 'unique', 'message' => 'Such genre already exists'],
         ];
     }
 
