@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description:ntext',
             [
+                'label' => 'Genres',
+                'value' => implode(', ', $genres),
+            ],
+            [
                 'label' => 'Small poster',
                 'value' => ($model->poster_small) ? Html::img(Yii::getAlias('@poster_small_url') . $model->poster_small, ['class' => 'img-responsive']) : '',
                 'format' => 'raw',
@@ -46,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Duration',
                 'value' => ($model->duration) ? $model->duration . ' min'  : '',
             ],
+
             'src',
             [
                 'label' => 'Trailer',

@@ -34,6 +34,22 @@ use kartik\color\ColorInput;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+    <div class="form-group <?= ($genres_field_has_errors) ? 'has-error' : '' ?>">
+        <label for="genres">Genres</label>
+        <div>
+            <?php if (!empty($genres)) {
+                foreach ($genres as $genre) { ?>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="genres[]"
+                               value="<?= $genre['id'] ?>" <?= (in_array($genre['id'], $checked_genres)) ? 'checked="checked"' : '' ?>><?= $genre['title'] ?>
+                    </label>
+                <? }
+            } ?>
+        </div>
+        <?= ($genres_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
+    </div>
+
+
     <?= $form->field($model, 'poster_small')->fileInput() ?>
 
     <?= $form->field($model, 'poster_big')->fileInput() ?>

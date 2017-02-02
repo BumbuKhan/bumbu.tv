@@ -54,4 +54,58 @@ class MoviesDP extends Model
 
         return Yii::$app->db->createCommand($sql, [':series_id' => $series_id])->queryAll();
     }
+
+    /**
+     * @param $movie_id
+     * @param $genres_id
+     */
+    public static function setMovieGenreRel($movie_id, $genres_id)
+    {
+        // first deleting all records from 'movies_genre_rel' table related to this movie
+        self::deleteMovieGenreRel($movie_id);
+
+        // preparing data to batch insert
+        $batch_data = [];
+
+        foreach ($genres_id as $genre_id) {
+            $batch_data[] = ['movie_id' => $movie_id, 'genre_id' => $genre_id];
+        }
+
+        // batch inserting
+        $inserted = Yii::$app->db->createCommand()->batchInsert('movies_genre_rel', ['movie_id', 'genre_id'], $batch_data)->execute();
+    }
+
+    /**
+     * @param $movie_id
+     * @return array
+     */
+    public static function getGenresIdRelatedToMovie($movie_id)
+    {
+        $sql = "SELECT genre_id FROM movies_genre_rel WHERE movie_id = :movie_id";
+
+        return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
+    }
+
+    /**
+     * @param $movie_id
+     * @return array
+     */
+    public static function getMovieGenreRel($movie_id)
+    {
+        $sql = "SELECT g.id, g.title 
+            FROM movies_genre_rel rel
+            LEFT JOIN genres g ON rel.genre_id = g.id
+            WHERE rel.movie_id = :movie_id";
+
+        return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryAll();
+    }
+
+    /**
+     * @param $movie_id
+     * @return int
+     */
+    public static function deleteMovieGenreRel($movie_id)
+    {
+        return Yii::$app->db->createCommand()->delete('movies_genre_rel', ['movie_id' => $movie_id])->execute();
+    }
 }

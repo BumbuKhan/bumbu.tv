@@ -18,6 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'series_model' => $series_model,
         'series' => $series,
+        'genres' => $genres,
+        'checked_genres' => $checked_genres,
+        'genres_field_has_errors' => $genres_field_has_errors,
     ]) ?>
 
 </div>

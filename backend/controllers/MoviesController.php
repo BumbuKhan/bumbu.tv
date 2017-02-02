@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
+use backend\models\Genres;
 use backend\models\Movies;
 use backend\models\MoviesSearch;
 use backend\models\MoviesDP;
@@ -59,6 +60,7 @@ class MoviesController extends SiteController
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'genres' => ArrayHelper::map(MoviesDP::getMovieGenreRel($id), 'id', 'title')
         ]);
     }
 
@@ -71,6 +73,8 @@ class MoviesController extends SiteController
     {
         $model = new Movies();
         $series_model = new SeriesEpisodeRel();
+        $genres_field_has_errors = false;
+        $checked_genres = [];
 
         $request = Yii::$app->request;
         $post = $request->post();
@@ -97,6 +101,11 @@ class MoviesController extends SiteController
                 default:
                     $model->scenario = 'default';
             }
+
+            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
+
+            // save checked genres
+            $checked_genres = $request->post('genres', []);
         }
 
         if ($model->load($post) && $series_model->load($post)) {
@@ -125,7 +134,7 @@ class MoviesController extends SiteController
                 $model->series_poster_right = UploadedFile::getInstance($model, 'series_poster_right');
             }
 
-            if ($model->validate()) {
+            if ($model->validate() && !$genres_field_has_errors) {
 
                 // if current scenario euquals to 'series_episode_create' then we should save episode-series bind also
                 if ($model->scenario == 'series_episode_create') {
@@ -261,6 +270,11 @@ class MoviesController extends SiteController
                         $series_model->save();
                     }
 
+                    // adding movie-genre relations
+                    if (!in_array($model->scenario, ['series_episode_create', 'ted_create'])) {
+                        MoviesDP::setMovieGenreRel($model->id, $checked_genres);
+                    }
+
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             } else {
@@ -268,6 +282,9 @@ class MoviesController extends SiteController
                     'model' => $model,
                     'series_model' => $series_model,
                     'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
+                    'genres' => Genres::find()->orderBy('title')->asArray()->all(),
+                    'checked_genres' => $checked_genres,
+                    'genres_field_has_errors' => $genres_field_has_errors,
                 ]);
             }
         }
@@ -276,6 +293,9 @@ class MoviesController extends SiteController
             'model' => $model,
             'series_model' => $series_model,
             'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
+            'genres' => Genres::find()->orderBy('title')->asArray()->all(),
+            'checked_genres' => $checked_genres,
+            'genres_field_has_errors' => $genres_field_has_errors,
         ]);
     }
 
@@ -288,6 +308,8 @@ class MoviesController extends SiteController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $genres_field_has_errors = false;
+        $checked_genres = MoviesDP::getGenresIdRelatedToMovie($id);
 
         $poster_small_before_update = $model->poster_small;
         $poster_big_before_update = $model->poster_big;
@@ -321,6 +343,11 @@ class MoviesController extends SiteController
                 default:
                     $model->scenario = 'default';
             }
+
+            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
+
+            // save checked genres
+            $checked_genres = $request->post('genres', []);
         }
 
         if ($model->load(Yii::$app->request->post())) {
@@ -349,7 +376,7 @@ class MoviesController extends SiteController
                 $model->series_poster_right = UploadedFile::getInstance($model, 'series_poster_right');
             }
 
-            if ($model->validate()) {
+            if ($model->validate() && !$genres_field_has_errors) {
 
                 $image = new SimpleImage();
                 $unique_id = uniqid(time());
@@ -485,17 +512,29 @@ class MoviesController extends SiteController
                 }
 
                 if ($model->save(false)) {
+
+                    // adding movie-genre relations
+                    if (!in_array($model->scenario, ['series_episode_create', 'ted_create'])) {
+                        MoviesDP::setMovieGenreRel($id, $checked_genres);
+                    }
+
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             } else {
                 return $this->render('create', [
                     'model' => $model,
+                    'genres' => Genres::find()->orderBy('title')->asArray()->all(),
+                    'checked_genres' => $checked_genres,
+                    'genres_field_has_errors' => $genres_field_has_errors,
                 ]);
             }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'genres' => Genres::find()->orderBy('title')->asArray()->all(),
+            'checked_genres' => $checked_genres,
+            'genres_field_has_errors' => $genres_field_has_errors,
         ]);
     }
 
@@ -546,6 +585,8 @@ class MoviesController extends SiteController
         self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_left);
         self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_right);
 
+        // deleting genres relation as well
+        MoviesDP::deleteMovieGenreRel($id);
 
         $record->delete();
 
