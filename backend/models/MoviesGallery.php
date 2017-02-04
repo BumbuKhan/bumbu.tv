@@ -54,4 +54,15 @@ class MoviesGallery extends \yii\db\ActiveRecord
         // batch inserting
         $inserted = Yii::$app->db->createCommand()->batchInsert('movies_gallery', ['movie_id', 'img_src'], $batch_data)->execute();
     }
+
+    /**
+     * @param $movie_id
+     * @return array
+     */
+    public static function getData($movie_id)
+    {
+        $sql = "SELECT img_src FROM " . self::tableName() . " WHERE movie_id = :movie_id";
+
+        return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
+    }
 }

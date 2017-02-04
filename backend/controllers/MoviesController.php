@@ -63,7 +63,8 @@ class MoviesController extends SiteController
         return $this->render('view', [
             'model' => $this->findModel($id),
             'genres' => ArrayHelper::map(MoviesDP::getMovieGenreRel($id), 'id', 'title'),
-            'countries' => ArrayHelper::map(MoviesDP::getMovieCountryRel($id), 'id', 'title')
+            'countries' => ArrayHelper::map(MoviesDP::getMovieCountryRel($id), 'id', 'title'),
+            'gallery' => MoviesGallery::getData($id)
         ]);
     }
 
@@ -279,7 +280,7 @@ class MoviesController extends SiteController
                     $gal_img = [];
 
                     foreach ($gallery_model->img_src as $k => $img) {
-                        $file_name = 'gb_' . $k . '_' . $unique_id . '.' . $img->extension;
+                        $file_name = 'g_' . $unique_id . '_' . $k . '.' . $img->extension;
 
                         try {
                             $img_width = Yii::$app->params['gal_big_width'];
@@ -291,13 +292,9 @@ class MoviesController extends SiteController
                                 ->thumbnail($img_width, $img_height, $img_anchor)
                                 ->toFile(Yii::getAlias('@gallery_big') . $file_name, 'image/jpeg');
 
-                            $gal_img[] = $file_name;
-
                         } catch (Exception $err) {
                             echo $err->getMessage();
                         }
-
-                        $file_name = 'gt_' . $k . '_' . $unique_id . '.' . $img->extension;
 
                         try {
                             $img_width = Yii::$app->params['gal_thumb_width'];
@@ -309,11 +306,11 @@ class MoviesController extends SiteController
                                 ->thumbnail($img_width, $img_height, $img_anchor)
                                 ->toFile(Yii::getAlias('@gallery_thumb') . $file_name, 'image/jpeg');
 
-                            $gal_img[] = $file_name;
-
                         } catch (Exception $err) {
                             echo $err->getMessage();
                         }
+
+                        $gal_img[] = $file_name;
                     }
                 }
 

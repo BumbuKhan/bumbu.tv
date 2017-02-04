@@ -51,6 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
             ],
             [
+                'label' => 'Gallery',
+                'value' => implode(', ', $gallery),
+                'format' => 'raw',
+            ],
+            [
                 'label' => 'Duration',
                 'value' => ($model->duration) ? $model->duration . ' min'  : '',
             ],
