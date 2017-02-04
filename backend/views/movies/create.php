@@ -21,6 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'genres' => $genres,
         'checked_genres' => $checked_genres,
         'genres_field_has_errors' => $genres_field_has_errors,
+        'countries' => $countries,
+        'checked_countries' => $checked_countries,
+        'countries_field_has_errors' => $countries_field_has_errors,
     ]) ?>
 
 </div>

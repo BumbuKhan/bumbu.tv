@@ -31,7 +31,7 @@ AppAsset::register($this);
         'brandLabel' => 'Bumbu CMS',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            'class' => 'navbar-inverse',
         ],
     ]);
 

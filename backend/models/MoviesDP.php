@@ -75,6 +75,27 @@ class MoviesDP extends Model
         $inserted = Yii::$app->db->createCommand()->batchInsert('movies_genre_rel', ['movie_id', 'genre_id'], $batch_data)->execute();
     }
 
+
+    /**
+     * @param $movie_id
+     * @param $countries_id
+     */
+    public static function setMovieCountryRel($movie_id, $countries_id)
+    {
+        // first deleting all records from 'movies_country_rel' table related to this movie
+        self::deleteMovieCountryRel($movie_id);
+
+        // preparing data to batch insert
+        $batch_data = [];
+
+        foreach ($countries_id as $country_id) {
+            $batch_data[] = ['movie_id' => $movie_id, 'country_id' => $country_id];
+        }
+
+        // batch inserting
+        $inserted = Yii::$app->db->createCommand()->batchInsert('movies_country_rel', ['movie_id', 'country_id'], $batch_data)->execute();
+    }
+
     /**
      * @param $movie_id
      * @return array
@@ -82,6 +103,17 @@ class MoviesDP extends Model
     public static function getGenresIdRelatedToMovie($movie_id)
     {
         $sql = "SELECT genre_id FROM movies_genre_rel WHERE movie_id = :movie_id";
+
+        return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
+    }
+
+    /**
+     * @param $movie_id
+     * @return array
+     */
+    public static function getCountriesIdRelatedToMovie($movie_id)
+    {
+        $sql = "SELECT country_id FROM movies_country_rel WHERE movie_id = :movie_id";
 
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
     }
@@ -107,5 +139,14 @@ class MoviesDP extends Model
     public static function deleteMovieGenreRel($movie_id)
     {
         return Yii::$app->db->createCommand()->delete('movies_genre_rel', ['movie_id' => $movie_id])->execute();
+    }
+
+    /**
+     * @param $movie_id
+     * @return int
+     */
+    public static function deleteMovieCountryRel($movie_id)
+    {
+        return Yii::$app->db->createCommand()->delete('movies_country_rel', ['movie_id' => $movie_id])->execute();
     }
 }

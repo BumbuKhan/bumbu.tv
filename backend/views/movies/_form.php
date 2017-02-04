@@ -11,7 +11,7 @@ use kartik\color\ColorInput;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="movies-form">
+<div class="movies-form" xmlns="http://www.w3.org/1999/html">
 
     <?php $form = ActiveForm::begin([
         'enableClientScript' => false
@@ -47,6 +47,20 @@ use kartik\color\ColorInput;
             } ?>
         </div>
         <?= ($genres_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
+    </div>
+
+    <div class="form-group <?= ($countries_field_has_errors) ? 'has-error' : '' ?>">
+        <label for="genres">Countries</label>
+        <div>
+            <?php if (!empty($countries)) { ?>
+                <select name="countries[]" multiple="multiple">
+                <?php foreach ($countries as $country) { ?>
+                    <option value="<?= $country['id'] ?>" <?= (in_array($country['id'], $checked_countries)) ? 'selected="selected"' : '' ?>><?= $country['title'] ?></option>
+                <?php } ?>
+                </select>
+            <?php } ?>
+        </div>
+        <?= ($countries_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
     </div>
 
 
