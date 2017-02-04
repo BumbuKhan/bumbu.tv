@@ -134,6 +134,20 @@ class MoviesDP extends Model
 
     /**
      * @param $movie_id
+     * @return array
+     */
+    public static function getMovieCountryRel($movie_id)
+    {
+        $sql = "SELECT c.id, c.title 
+            FROM movies_country_rel rel
+            LEFT JOIN countries c ON rel.country_id = c.id
+            WHERE rel.movie_id = :movie_id";
+
+        return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryAll();
+    }
+
+    /**
+     * @param $movie_id
      * @return int
      */
     public static function deleteMovieGenreRel($movie_id)

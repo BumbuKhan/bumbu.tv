@@ -37,6 +37,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => implode(', ', $genres),
             ],
             [
+                'label' => 'Countries',
+                'value' => implode(', ', $countries),
+            ],
+            [
                 'label' => 'Small poster',
                 'value' => ($model->poster_small) ? Html::img(Yii::getAlias('@poster_small_url') . $model->poster_small, ['class' => 'img-responsive']) : '',
                 'format' => 'raw',

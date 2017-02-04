@@ -61,7 +61,8 @@ class MoviesController extends SiteController
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'genres' => ArrayHelper::map(MoviesDP::getMovieGenreRel($id), 'id', 'title')
+            'genres' => ArrayHelper::map(MoviesDP::getMovieGenreRel($id), 'id', 'title'),
+            'countries' => ArrayHelper::map(MoviesDP::getMovieCountryRel($id), 'id', 'title')
         ]);
     }
 
