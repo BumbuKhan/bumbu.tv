@@ -668,6 +668,18 @@ class MoviesController extends SiteController
         MoviesDP::deleteMovieGenreRel($id);
         MoviesDP::deleteMovieCountryRel($id);
 
+        // getting gallery's photo
+        $gal_photos = MoviesGallery::getData($id);
+
+        if (!empty($gal_photos)) {
+            foreach ($gal_photos as $gal_photo) {
+                MoviesDP::removeFile(Yii::getAlias('@gallery_thumb') . $gal_photo);
+                MoviesDP::removeFile(Yii::getAlias('@gallery_big') . $gal_photo);
+            }
+
+            MoviesGallery::deleteData($id);
+        }
+
         $record->delete();
 
         return $this->redirect(['index']);

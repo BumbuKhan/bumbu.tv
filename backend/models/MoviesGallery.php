@@ -65,4 +65,9 @@ class MoviesGallery extends \yii\db\ActiveRecord
 
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
     }
+
+    public static function deleteData($id)
+    {
+        return Yii::$app->db->createCommand()->delete(self::tableName(), ['movie_id' => $id])->execute();
+    }
 }
