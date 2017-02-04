@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Фев 01 2017 г., 00:57
+-- Время создания: Фев 05 2017 г., 01:43
 -- Версия сервера: 5.5.48
 -- Версия PHP: 5.6.19
 
@@ -87,6 +87,18 @@ CREATE TABLE IF NOT EXISTS `movies_country_rel` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `movies_gallery`
+--
+
+CREATE TABLE IF NOT EXISTS `movies_gallery` (
+  `id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `img_src` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `movies_genre_rel`
 --
 
@@ -162,6 +174,12 @@ ALTER TABLE `movies_country_rel`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `movies_gallery`
+--
+ALTER TABLE `movies_gallery`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `movies_genre_rel`
 --
 ALTER TABLE `movies_genre_rel`
@@ -210,6 +228,11 @@ ALTER TABLE `movies`
 -- AUTO_INCREMENT для таблицы `movies_country_rel`
 --
 ALTER TABLE `movies_country_rel`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `movies_gallery`
+--
+ALTER TABLE `movies_gallery`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `movies_genre_rel`
