@@ -5,6 +5,9 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 use kartik\color\ColorInput;
+use backend\assets\Select2Asset;
+
+Select2Asset::register($this);
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Movies */
@@ -37,32 +40,42 @@ use kartik\color\ColorInput;
     <div class="form-group <?= ($genres_field_has_errors) ? 'has-error' : '' ?>">
         <label for="genres">Genres</label>
         <div>
-            <?php if (!empty($genres)) {
-                foreach ($genres as $genre) { ?>
-                    <label class="checkbox-inline">
+            <?php if (!empty($genres)) { ?>
+                <select name="genres[]" multiple="multiple" id="genres" style="width: 100%">
+                    <?php foreach ($genres as $genre) { ?>
+                        <option
+                            value="<?= $genre['id'] ?>" <?= (in_array($genre['id'], $checked_genres)) ? 'selected="selected"' : '' ?>><?= $genre['title'] ?></option>
+                        <!--<label class="checkbox-inline">
                         <input type="checkbox" name="genres[]"
-                               value="<?= $genre['id'] ?>" <?= (in_array($genre['id'], $checked_genres)) ? 'checked="checked"' : '' ?>><?= $genre['title'] ?>
-                    </label>
-                <? }
-            } ?>
+                               value="<? /*= $genre['id'] */ ?>" <? /*= (in_array($genre['id'], $checked_genres)) ? 'checked="checked"' : '' */ ?>><? /*= $genre['title'] */ ?>
+                    </label>-->
+                    <? } ?>
+                </select>
+            <?php } ?>
         </div>
         <?= ($genres_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
     </div>
 
     <div class="form-group <?= ($countries_field_has_errors) ? 'has-error' : '' ?>">
-        <label for="genres">Countries</label>
+        <label for="countries">Countries</label>
         <div>
             <?php if (!empty($countries)) { ?>
-                <select name="countries[]" multiple="multiple">
-                <?php foreach ($countries as $country) { ?>
-                    <option value="<?= $country['id'] ?>" <?= (in_array($country['id'], $checked_countries)) ? 'selected="selected"' : '' ?>><?= $country['title'] ?></option>
-                <?php } ?>
+                <select name="countries[]" multiple="multiple" id="countries" style="width: 100%">
+                    <?php foreach ($countries as $country) { ?>
+                        <option
+                            value="<?= $country['id'] ?>" <?= (in_array($country['id'], $checked_countries)) ? 'selected="selected"' : '' ?>><?= $country['title'] ?></option>
+                    <?php } ?>
                 </select>
             <?php } ?>
         </div>
         <?= ($countries_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
     </div>
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#countries, #genres").select2();
+        })
+    </script>
 
     <?= $form->field($model, 'poster_small')->fileInput() ?>
 
