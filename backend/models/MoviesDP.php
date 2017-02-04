@@ -132,10 +132,7 @@ class MoviesDP extends Model
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryAll();
     }
 
-    /**
-     * @param $movie_id
-     * @return array
-     */
+
     public static function getMovieCountryRel($movie_id)
     {
         $sql = "SELECT c.id, c.title 
@@ -162,5 +159,14 @@ class MoviesDP extends Model
     public static function deleteMovieCountryRel($movie_id)
     {
         return Yii::$app->db->createCommand()->delete('movies_country_rel', ['movie_id' => $movie_id])->execute();
+    }
+
+    /**
+     * @param $file
+     * @return bool
+     */
+    public static function removeFile($file)
+    {
+        return @unlink($file);
     }
 }

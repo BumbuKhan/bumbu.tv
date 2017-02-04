@@ -2,12 +2,13 @@
 
 namespace backend\controllers;
 
-use backend\models\Countries;
 use Yii;
+use backend\models\Countries;
 use backend\models\Genres;
 use backend\models\Movies;
 use backend\models\MoviesSearch;
 use backend\models\MoviesDP;
+use backend\models\MoviesGallery;
 use backend\models\SeriesEpisodeRel;
 use backend\controllers\SiteController;
 use yii\web\Controller;
@@ -75,8 +76,9 @@ class MoviesController extends SiteController
     {
         $model = new Movies();
         $series_model = new SeriesEpisodeRel();
+        $gallery_model = new MoviesGallery();
 
-        $genres_field_has_errors = $countries_field_has_errors = false;
+        $genres_field_has_errors = $countries_field_has_errors = $gallery_field_has_errors = false;
         $checked_genres = $checked_countries = [];
 
         $request = Yii::$app->request;
@@ -105,9 +107,9 @@ class MoviesController extends SiteController
                     $model->scenario = 'default';
             }
 
-            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
+            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create', 'default']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
 
-            $countries_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['countries']) || (!empty($post['countries']) && !is_array($post['countries'])));
+            $countries_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create', 'default']) && empty($post['countries']) || (!empty($post['countries']) && !is_array($post['countries'])));
 
             // save checked genres
             $checked_genres = $request->post('genres', []);
@@ -116,7 +118,7 @@ class MoviesController extends SiteController
             $checked_countries = $request->post('countries', []);
         }
 
-        if ($model->load($post) && $series_model->load($post)) {
+        if ($model->load($post) && $series_model->load($post) && $gallery_model->load($post)) {
 
             if (in_array('poster_small', $model->scenarios()[$model->scenario])) {
                 $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
@@ -142,7 +144,10 @@ class MoviesController extends SiteController
                 $model->series_poster_right = UploadedFile::getInstance($model, 'series_poster_right');
             }
 
-            if ($model->validate() && !$genres_field_has_errors && !$countries_field_has_errors) {
+            $gallery_model->img_src = UploadedFile::getInstances($gallery_model, 'img_src');
+            $gallery_field_has_errors = (in_array($model->scenario, ['movie_create', 'cartoon_create']) && !$gallery_model->validate());
+
+            if ($model->validate() && !$genres_field_has_errors && !$countries_field_has_errors && !$gallery_field_has_errors) {
 
                 // if current scenario euquals to 'series_episode_create' then we should save episode-series bind also
                 if ($model->scenario == 'series_episode_create') {
@@ -270,6 +275,48 @@ class MoviesController extends SiteController
                     $model->series_poster_right->name = $file_name;
                 }
 
+                if (in_array($model->scenario, ['movie_create', 'cartoon_create'])) {
+                    $gal_img = [];
+
+                    foreach ($gallery_model->img_src as $k => $img) {
+                        $file_name = 'gb_' . $k . '_' . $unique_id . '.' . $img->extension;
+
+                        try {
+                            $img_width = Yii::$app->params['gal_big_width'];
+                            $img_height = Yii::$app->params['gal_big_height'];
+                            $img_anchor = Yii::$app->params['gal_big_anchor'];
+
+                            $image
+                                ->fromFile($img->tempName)
+                                ->thumbnail($img_width, $img_height, $img_anchor)
+                                ->toFile(Yii::getAlias('@gallery_big') . $file_name, 'image/jpeg');
+
+                            $gal_img[] = $file_name;
+
+                        } catch (Exception $err) {
+                            echo $err->getMessage();
+                        }
+
+                        $file_name = 'gt_' . $k . '_' . $unique_id . '.' . $img->extension;
+
+                        try {
+                            $img_width = Yii::$app->params['gal_thumb_width'];
+                            $img_height = Yii::$app->params['gal_thumb_height'];
+                            $img_anchor = Yii::$app->params['gal_thumb_anchor'];
+
+                            $image
+                                ->fromFile($img->tempName)
+                                ->thumbnail($img_width, $img_height, $img_anchor)
+                                ->toFile(Yii::getAlias('@gallery_thumb') . $file_name, 'image/jpeg');
+
+                            $gal_img[] = $file_name;
+
+                        } catch (Exception $err) {
+                            echo $err->getMessage();
+                        }
+                    }
+                }
+
                 $model->add_datetime = date('Y-m-d H:i:s', time());
 
                 if ($model->save(false)) {
@@ -284,12 +331,18 @@ class MoviesController extends SiteController
                         MoviesDP::setMovieCountryRel($model->id, $checked_countries);
                     }
 
+                    // saving gallery
+                    if (!empty($gal_img)) {
+                        $gallery_model->saveData($model->id, $gal_img);
+                    }
+
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             } else {
                 return $this->render('create', [
                     'model' => $model,
                     'series_model' => $series_model,
+                    'gallery_model' => $gallery_model,
                     'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
                     'genres' => Genres::find()->orderBy('title')->asArray()->all(),
                     'checked_genres' => $checked_genres,
@@ -304,6 +357,7 @@ class MoviesController extends SiteController
         return $this->render('create', [
             'model' => $model,
             'series_model' => $series_model,
+            'gallery_model' => $gallery_model,
             'series' => MoviesDP::getMovies(['id', 'title'], ['type' => 'series']),
             'genres' => Genres::find()->orderBy('title')->asArray()->all(),
             'checked_genres' => $checked_genres,
@@ -360,9 +414,9 @@ class MoviesController extends SiteController
                     $model->scenario = 'default';
             }
 
-            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
+            $genres_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create', 'default']) && empty($post['genres']) || (!empty($post['genres']) && !is_array($post['genres'])));
 
-            $countries_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create']) && empty($post['countries']) || (!empty($post['countries']) && !is_array($post['countries'])));
+            $countries_field_has_errors = (!in_array($model->scenario, ['series_episode_create', 'ted_create', 'default']) && empty($post['countries']) || (!empty($post['countries']) && !is_array($post['countries'])));
 
             // save checked genres
             $checked_genres = $request->post('genres', []);
@@ -404,7 +458,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->poster_small) && is_a($model->poster_small, UploadedFile::className())) {
                     $file_name = 'ps_' . $unique_id . '.' . $model->poster_small->extension;
-                    self::removeFile(Yii::getAlias('@poster_small') . $poster_small_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@poster_small') . $poster_small_before_update);
 
                     try {
                         if ($model->scenario == 'ted_create') {
@@ -433,7 +487,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->poster_big) && is_a($model->poster_big, UploadedFile::className())) {
                     $file_name = 'pb_' . $unique_id . '.' . $model->poster_big->extension;
-                    self::removeFile(Yii::getAlias('@poster_big') . $poster_big_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@poster_big') . $poster_big_before_update);
 
                     try {
                         $img_width = Yii::$app->params['poster_big_width'];
@@ -456,7 +510,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->subtitle) && is_a($model->subtitle, UploadedFile::className())) {
                     $file_name = 'st_' . $unique_id . '.' . $model->subtitle->extension;
-                    self::removeFile(Yii::getAlias('@subtitles') . $subtitle_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@subtitles') . $subtitle_before_update);
                     $model->subtitle->saveAs(Yii::getAlias('@subtitles') . $file_name);
                     $model->subtitle->name = $file_name;
                 } else {
@@ -465,7 +519,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->series_episode_shot) && is_a($model->series_episode_shot, UploadedFile::className())) {
                     $file_name = 'ep_' . $unique_id . '.' . $model->series_episode_shot->extension;
-                    self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
 
                     try {
                         $img_width = Yii::$app->params['series_episode_shot_width'];
@@ -488,7 +542,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->series_poster_left) && is_a($model->series_poster_left, UploadedFile::className())) {
                     $file_name = 'spl_' . $unique_id . '.' . $model->series_poster_left->extension;
-                    self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
 
                     try {
                         $img_width = Yii::$app->params['poster_small_width'];
@@ -511,7 +565,7 @@ class MoviesController extends SiteController
 
                 if (!empty($model->series_poster_right) && is_a($model->series_poster_right, UploadedFile::className())) {
                     $file_name = 'spr_' . $unique_id . '.' . $model->series_poster_right->extension;
-                    self::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
+                    MoviesDP::removeFile(Yii::getAlias('@episodes') . $subtitle_before_update);
 
                     try {
                         $img_width = Yii::$app->params['poster_small_width'];
@@ -587,8 +641,8 @@ class MoviesController extends SiteController
             // deleting media files fro episodes
             if (!empty($episodes)) {
                 foreach ($episodes as $episode) {
-                    self::removeFile(Yii::getAlias('@subtitles') . $episode['subtitle']);
-                    self::removeFile(Yii::getAlias('@episodes') . $episode['series_episode_shot']);
+                    MoviesDP::removeFile(Yii::getAlias('@subtitles') . $episode['subtitle']);
+                    MoviesDP::removeFile(Yii::getAlias('@episodes') . $episode['series_episode_shot']);
 
                     $episode_ids[] = $episode['id'];
                 }
@@ -606,12 +660,12 @@ class MoviesController extends SiteController
             SeriesEpisodeRel::find()->where(['episode_id' => $record->id])->one()->delete();
         }
 
-        self::removeFile(Yii::getAlias('@poster_small') . $record->poster_small);
-        self::removeFile(Yii::getAlias('@poster_big') . $record->poster_big);
-        self::removeFile(Yii::getAlias('@subtitles') . $record->subtitle);
-        self::removeFile(Yii::getAlias('@episodes') . $record->series_episode_shot);
-        self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_left);
-        self::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_right);
+        MoviesDP::removeFile(Yii::getAlias('@poster_small') . $record->poster_small);
+        MoviesDP::removeFile(Yii::getAlias('@poster_big') . $record->poster_big);
+        MoviesDP::removeFile(Yii::getAlias('@subtitles') . $record->subtitle);
+        MoviesDP::removeFile(Yii::getAlias('@episodes') . $record->series_episode_shot);
+        MoviesDP::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_left);
+        MoviesDP::removeFile(Yii::getAlias('@poster_small') . $record->series_poster_right);
 
         // deleting genres & countries relation as well
         MoviesDP::deleteMovieGenreRel($id);
@@ -636,10 +690,5 @@ class MoviesController extends SiteController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    public static function removeFile($file)
-    {
-        return @unlink($file);
     }
 }

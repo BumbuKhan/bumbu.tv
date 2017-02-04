@@ -8,7 +8,6 @@ return [
 
         '@gallery_thumb' => '@uploads/movies/gallery/thumb/',        /* Movie's photo gallery */
         '@gallery_big' => '@uploads/movies/gallery/big/',            /* Movie's photo gallery */
-        '@gallery_original' => '@uploads/movies/gallery/original/',  /* Movie's photo gallery */
 
         '@subtitles' => '@uploads/movies/subtitles/',           /* Subtitles for movie */
         '@episodes' => '@uploads/movies/episodes/',             /* Episodes for series */

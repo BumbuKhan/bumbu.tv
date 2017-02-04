@@ -1,7 +1,7 @@
 <?php
 return [
     'adminEmail' => 'admin@example.com',
-    'movie_types' => ['movie' => 'Movies', 'series' => 'Series', 'episode' => 'Episode', 'ted' => 'TED'],
+    'movie_types' => ['movie' => 'Movie', 'cartoon' => 'Cartoon', 'series' => 'Series', 'episode' => 'Episode', 'ted' => 'TED'],
 
     // params for movie's mediafiles
     'poster_small_width' => 200,
@@ -22,4 +22,12 @@ return [
     'poster_ted_width' => 200,
     'poster_ted_height' => 110,
     'poster_ted_anchor' => 'center', /*  'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' (default 'center') */
+
+    'gal_thumb_width' => 200,
+    'gal_thumb_height' => 100,
+    'gal_thumb_anchor' => 'center', /*  'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' (default 'center') */
+
+    'gal_big_width' => 200,
+    'gal_big_height' => 100,
+    'gal_big_anchor' => 'center', /*  'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' (default 'center') */
 ];

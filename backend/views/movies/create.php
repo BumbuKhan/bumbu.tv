@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form', [
         'model' => $model,
         'series_model' => $series_model,
+        'gallery_model' => $gallery_model,
         'series' => $series,
         'genres' => $genres,
         'checked_genres' => $checked_genres,

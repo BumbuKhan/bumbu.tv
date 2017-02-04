@@ -38,17 +38,13 @@ Select2Asset::register($this);
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <div class="form-group <?= ($genres_field_has_errors) ? 'has-error' : '' ?>">
-        <label for="genres">Genres</label>
+        <label for="genres" class="control-label">Genres</label>
         <div>
             <?php if (!empty($genres)) { ?>
                 <select name="genres[]" multiple="multiple" id="genres" style="width: 100%">
                     <?php foreach ($genres as $genre) { ?>
                         <option
                             value="<?= $genre['id'] ?>" <?= (in_array($genre['id'], $checked_genres)) ? 'selected="selected"' : '' ?>><?= $genre['title'] ?></option>
-                        <!--<label class="checkbox-inline">
-                        <input type="checkbox" name="genres[]"
-                               value="<? /*= $genre['id'] */ ?>" <? /*= (in_array($genre['id'], $checked_genres)) ? 'checked="checked"' : '' */ ?>><? /*= $genre['title'] */ ?>
-                    </label>-->
                     <? } ?>
                 </select>
             <?php } ?>
@@ -57,7 +53,7 @@ Select2Asset::register($this);
     </div>
 
     <div class="form-group <?= ($countries_field_has_errors) ? 'has-error' : '' ?>">
-        <label for="countries">Countries</label>
+        <label for="countries" class="control-label">Countries</label>
         <div>
             <?php if (!empty($countries)) { ?>
                 <select name="countries[]" multiple="multiple" id="countries" style="width: 100%">
@@ -68,7 +64,7 @@ Select2Asset::register($this);
                 </select>
             <?php } ?>
         </div>
-        <?= ($countries_field_has_errors) ? '<div class="help-block">Choose at least one genre</div>' : '' ?>
+        <?= ($countries_field_has_errors) ? '<div class="help-block">Choose at least one country</div>' : '' ?>
     </div>
 
     <script type="text/javascript">
@@ -93,10 +89,6 @@ Select2Asset::register($this);
 
     <?= $form->field($model, 'series_episode_shot')->fileInput() ?>
 
-    <?= $form->field($model, 'series_poster_left')->fileInput() ?>
-
-    <?= $form->field($model, 'series_poster_right')->fileInput() ?>
-
     <?= $form->field($model, 'series_poster_gradient_start')->widget(
         ColorInput::classname(), [
         'options' => ['placeholder' => 'Select color ...'],
@@ -107,6 +99,10 @@ Select2Asset::register($this);
         'options' => ['placeholder' => 'Select color ...'],
     ]) ?>
 
+    <?= $form->field($model, 'series_poster_left')->fileInput() ?>
+
+    <?= $form->field($model, 'series_poster_right')->fileInput() ?>
+
     <?= $form->field($model, 'issue_date')->widget(
         DatePicker::className(), [
         'clientOptions' => [
@@ -114,6 +110,8 @@ Select2Asset::register($this);
             'format' => 'yyyy-mm-dd'
         ]
     ]); ?>
+
+    <?= $form->field($gallery_model, 'img_src[]')->fileInput(['multiple' => true, 'accept' => '*']) ?>
 
     <?= $form->field($model, 'is_blocked')->dropDownList([
         '0' => 'No',
