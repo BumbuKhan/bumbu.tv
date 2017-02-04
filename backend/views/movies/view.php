@@ -25,6 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
+    <?php
+    if (!empty($gallery)) {
+        $imgs = '';
+        foreach ($gallery as $img) {
+            $imgs .= "<img src='" . Yii::getAlias('@gallery_thumb_url') . $img . "' /> ";
+        }
+    }
+    ?>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -52,12 +61,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Gallery',
-                'value' => implode(', ', $gallery),
+                'value' => $imgs,
                 'format' => 'raw',
             ],
             [
                 'label' => 'Duration',
-                'value' => ($model->duration) ? $model->duration . ' min'  : '',
+                'value' => ($model->duration) ? $model->duration . ' min' : '',
             ],
 
             'src',
