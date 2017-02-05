@@ -385,6 +385,8 @@ class MoviesController extends SiteController
         $series_poster_left_before_update = $model->series_poster_left;
         $series_poster_right_before_update = $model->series_poster_right;
 
+        $gallery_model = new MoviesGallery();
+
         $request = Yii::$app->request;
         $post = $request->post();
 
@@ -422,7 +424,7 @@ class MoviesController extends SiteController
             $checked_countries = $request->post('countries', []);
         }
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) && $gallery_model->load($post)) {
 
             if (in_array('poster_small', $model->scenarios()[$model->scenario])) {
                 $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
@@ -446,6 +448,14 @@ class MoviesController extends SiteController
 
             if (in_array('series_poster_right', $model->scenarios()[$model->scenario])) {
                 $model->series_poster_right = UploadedFile::getInstance($model, 'series_poster_right');
+            }
+
+            // gallery
+            if (in_array($model->scenario, ['movie_update', 'cartoon_update'])) {
+                $gallery_model->img_src = UploadedFile::getInstances($gallery_model, 'img_src');
+                echo '<pre>';
+                print_r($gallery_model->img_src);
+                die();
             }
 
             if ($model->validate() && !$genres_field_has_errors && !$countries_field_has_errors) {
@@ -602,6 +612,7 @@ class MoviesController extends SiteController
                     'countries' => Countries::find()->orderBy('title')->asArray()->all(),
                     'checked_countries' => $checked_countries,
                     'countries_field_has_errors' => $countries_field_has_errors,
+                    'gallery_model' => $gallery_model,
                 ]);
             }
         }
@@ -614,6 +625,7 @@ class MoviesController extends SiteController
             'countries' => Countries::find()->orderBy('title')->asArray()->all(),
             'checked_countries' => $checked_countries,
             'countries_field_has_errors' => $countries_field_has_errors,
+            'gallery_model' => $gallery_model,
         ]);
     }
 

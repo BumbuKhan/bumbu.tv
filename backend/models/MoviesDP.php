@@ -126,8 +126,9 @@ class MoviesDP extends Model
     {
         $sql = "SELECT g.id, g.title 
             FROM movies_genre_rel rel
-            LEFT JOIN genres g ON rel.genre_id = g.id
-            WHERE rel.movie_id = :movie_id";
+                LEFT JOIN genres g ON rel.genre_id = g.id
+            WHERE rel.movie_id = :movie_id
+            ORDER BY g.title";
 
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryAll();
     }
@@ -137,8 +138,9 @@ class MoviesDP extends Model
     {
         $sql = "SELECT c.id, c.title 
             FROM movies_country_rel rel
-            LEFT JOIN countries c ON rel.country_id = c.id
-            WHERE rel.movie_id = :movie_id";
+                LEFT JOIN countries c ON rel.country_id = c.id
+            WHERE rel.movie_id = :movie_id
+            ORDER BY c.title";
 
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryAll();
     }

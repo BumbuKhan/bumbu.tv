@@ -21,6 +21,14 @@ class MoviesGallery extends \yii\db\ActiveRecord
         return 'movies_gallery';
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios['movie_edit'] = ['img_src'];
+
+        return $scenarios;
+    }
+
     /**
      * @inheritdoc
      */
@@ -29,6 +37,7 @@ class MoviesGallery extends \yii\db\ActiveRecord
         return [
             [['img_src'], 'required'],
             [['img_src'], 'image', 'extensions' => ['jpg', 'jpeg'], 'maxFiles' => 7],
+            [['img_src'], 'image', 'skipOnEmpty' => true, 'extensions' => ['jpg', 'jpeg'], 'maxFiles' => 7, 'on' => 'movie_edit'],
         ];
     }
 
