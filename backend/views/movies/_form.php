@@ -20,7 +20,15 @@ Select2Asset::register($this);
         'enableClientScript' => false
     ]); ?>
 
-    <?= $form->field($model, 'type')->dropDownList(Yii::$app->params['movie_types'], ['prompt' => 'Choose type']) ?>
+    <?php
+    $type_options = ['prompt' => 'Choose type'];
+
+    if (Yii::$app->controller->action->id == 'update') {
+        $type_options['disabled'] = 'disabled';
+    }
+    ?>
+
+    <?= $form->field($model, 'type')->dropDownList(Yii::$app->params['movie_types'], $type_options) ?>
 
     <?php if (Yii::$app->controller->action->id == 'create') { ?>
         <div class="panel panel-default">

@@ -21,22 +21,14 @@ class MoviesGallery extends \yii\db\ActiveRecord
         return 'movies_gallery';
     }
 
-    public function scenarios()
-    {
-        $scenarios = parent::scenarios();
-        $scenarios['movie_edit'] = ['img_src'];
-
-        return $scenarios;
-    }
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['img_src'], 'required'],
-            [['img_src'], 'image', 'extensions' => ['jpg', 'jpeg'], 'maxFiles' => 7],
+            [['img_src'], 'required', 'on' => 'default'],
+            [['img_src'], 'image', 'extensions' => ['jpg', 'jpeg'], 'maxFiles' => 7, 'on' => 'default'],
             [['img_src'], 'image', 'skipOnEmpty' => true, 'extensions' => ['jpg', 'jpeg'], 'maxFiles' => 7, 'on' => 'movie_edit'],
         ];
     }
@@ -75,8 +67,18 @@ class MoviesGallery extends \yii\db\ActiveRecord
         return Yii::$app->db->createCommand($sql, [':movie_id' => $movie_id])->queryColumn();
     }
 
-    public static function deleteData($id)
+    /**
+     * @param $movie_id
+     * @return int
+     */
+    public static function deleteData($movie_id, $img_src = null)
     {
-        return Yii::$app->db->createCommand()->delete(self::tableName(), ['movie_id' => $id])->execute();
+        $cond = ['movie_id' => $movie_id];
+
+        if (!empty($photo_src)) {
+            $cond['img_src'] = $img_src;
+        }
+
+        return Yii::$app->db->createCommand()->delete(self::tableName(), $cond)->execute();
     }
 }

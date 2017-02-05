@@ -374,7 +374,7 @@ class MoviesController extends SiteController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $genres_field_has_errors = $countries_field_has_errors = false;
+        $genres_field_has_errors = $countries_field_has_errors = $gallery_field_has_error = false;
         $checked_genres = MoviesDP::getGenresIdRelatedToMovie($id);
         $checked_countries = MoviesDP::getCountriesIdRelatedToMovie($id);
 
@@ -389,6 +389,8 @@ class MoviesController extends SiteController
 
         $request = Yii::$app->request;
         $post = $request->post();
+
+
 
         if ($request->isPost) {
             $type = $post['Movies']['type'];
@@ -424,8 +426,7 @@ class MoviesController extends SiteController
             $checked_countries = $request->post('countries', []);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $gallery_model->load($post)) {
-
+        if ($model->load($post)) {
             if (in_array('poster_small', $model->scenarios()[$model->scenario])) {
                 $model->poster_small = UploadedFile::getInstance($model, 'poster_small');
             }
@@ -452,13 +453,14 @@ class MoviesController extends SiteController
 
             // gallery
             if (in_array($model->scenario, ['movie_update', 'cartoon_update'])) {
+                $gallery_model->scenario = 'movie_edit';
+                $gallery_model->load($post);
                 $gallery_model->img_src = UploadedFile::getInstances($gallery_model, 'img_src');
-                echo '<pre>';
-                print_r($gallery_model->img_src);
-                die();
+
+                $gallery_field_has_error = !$gallery_model->validate();
             }
 
-            if ($model->validate() && !$genres_field_has_errors && !$countries_field_has_errors) {
+            if ($model->validate() && !$genres_field_has_errors && !$countries_field_has_errors && !$gallery_field_has_error) {
 
                 $image = new SimpleImage();
                 $unique_id = uniqid(time());
@@ -593,12 +595,56 @@ class MoviesController extends SiteController
                     $model->series_poster_right = $series_poster_right_before_update;
                 }
 
+                // galleries
+                if (!empty($gallery_model->img_src) && is_a($gallery_model->img_src[0], UploadedFile::className()) && in_array($model->scenario, ['movie_update', 'cartoon_update'])) {
+                    $gal_img = [];
+
+                    foreach ($gallery_model->img_src as $k => $img) {
+                        $file_name = 'g_' . $unique_id . '_' . $k . '.' . $img->extension;
+
+                        try {
+                            $img_width = Yii::$app->params['gal_big_width'];
+                            $img_height = Yii::$app->params['gal_big_height'];
+                            $img_anchor = Yii::$app->params['gal_big_anchor'];
+
+                            $image
+                                ->fromFile($img->tempName)
+                                ->thumbnail($img_width, $img_height, $img_anchor)
+                                ->toFile(Yii::getAlias('@gallery_big') . $file_name, 'image/jpeg');
+
+                        } catch (Exception $err) {
+                            echo $err->getMessage();
+                        }
+
+                        try {
+                            $img_width = Yii::$app->params['gal_thumb_width'];
+                            $img_height = Yii::$app->params['gal_thumb_height'];
+                            $img_anchor = Yii::$app->params['gal_thumb_anchor'];
+
+                            $image
+                                ->fromFile($img->tempName)
+                                ->thumbnail($img_width, $img_height, $img_anchor)
+                                ->toFile(Yii::getAlias('@gallery_thumb') . $file_name, 'image/jpeg');
+
+                        } catch (Exception $err) {
+                            echo $err->getMessage();
+                        }
+
+                        $gal_img[] = $file_name;
+                    }
+                }
+
                 if ($model->save(false)) {
 
                     // adding movie-genre & movie-country relations
                     if (!in_array($model->scenario, ['series_episode_create', 'ted_create'])) {
                         MoviesDP::setMovieGenreRel($id, $checked_genres);
                         MoviesDP::setMovieCountryRel($model->id, $checked_countries);
+                    }
+
+                    // saving gallery
+                    if (!empty($gal_img)) {
+                        $gallery_model->saveData($id, $gal_img);
                     }
 
                     return $this->redirect(['view', 'id' => $model->id]);
