@@ -391,7 +391,6 @@ class MoviesController extends SiteController
         $post = $request->post();
 
 
-
         if ($request->isPost) {
             $type = $post['Movies']['type'];
 
