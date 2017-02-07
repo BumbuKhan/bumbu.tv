@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -29,10 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
     if (!empty($gallery)) {
         $imgs = '';
         foreach ($gallery as $img) {
-            $imgs .= "<img src='" . Yii::getAlias('@gallery_thumb_url') . $img . "' /> ";
+            $imgs .= "<div style='display: inline-block; margin: 0 10px 10px 0'><img src='" . Yii::getAlias('@gallery_thumb_url') . $img . "' style='margin-bottom: 5px;'/><br /><form method='post' action='". Url::toRoute(['view', 'id' => $model->id]) ."' onsubmit=\"return confirm('Do you really want to remove this image from the gallery?');\"><input type='hidden' name='" . Yii::$app->request->csrfParam."' value='" . Yii::$app->request->csrfToken . "'/><input type='hidden' name='img' value='". $img ."'/><button type='submit'>Delete</button></form></div>";
         }
     }
     ?>
+
+    <script>
+        function confirmImgDelete(e) {
+            var c = confirm('Please confirm your action');
+            if(!c){
+                e.preventDefault();
+            };
+        }
+    </script>
 
     <?= DetailView::widget([
         'model' => $model,

@@ -60,6 +60,24 @@ class MoviesController extends SiteController
      */
     public function actionView($id)
     {
+        $request = Yii::$app->request;
+
+        if ($request->isPost) {
+            $img = $request->post('img');
+
+            if (!empty($img) && is_string($img)) {
+                // removing from DB
+                $is_deleted = MoviesGallery::find()->where(['img_src' => $img])->andWhere(['movie_id' => $id])->limit(1)->one()->delete();
+
+                if ($is_deleted) {
+                    // removing from file system
+                    MoviesDP::removeFile(Yii::getAlias('@gallery_thumb') . $img);
+                }
+
+                return $this->redirect(['view', 'id' => $id]);
+            }
+        }
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'genres' => ArrayHelper::map(MoviesDP::getMovieGenreRel($id), 'id', 'title'),
