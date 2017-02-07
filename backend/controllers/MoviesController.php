@@ -67,7 +67,7 @@ class MoviesController extends SiteController
 
             if (!empty($img) && is_string($img)) {
                 // removing from DB
-                $is_deleted = MoviesGallery::find()->where(['img_src' => $img])->andWhere(['movie_id' => $id])->limit(1)->one()->delete();
+                $is_deleted = MoviesGallery::findOne(['img_src' => $img, 'movie_id' => $id])->delete();
 
                 if ($is_deleted) {
                     // removing from file system
